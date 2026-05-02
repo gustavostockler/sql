@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Masterclass - by Gustavo Stockler</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Theme Selection Modal -->
+    <div id="theme-modal" class="theme-modal-overlay">
+        <div class="theme-modal-content">
+            <button id="btn-close-modal" class="theme-modal-close" title="Fechar Janela"><i class="ph-bold ph-x"></i></button>
+            <h2 class="theme-modal-title">Escolha seu Ambiente de Trabalho</h2>
+            <p class="theme-modal-subtitle">Gustavo, selecione a empresa na qual o aluno fará o treinamento hoje:</p>
+            
+            <div class="theme-cards-container">
+                <!-- Theme 1: Veiculos -->
+                <div class="theme-card" data-theme="veiculos">
+                    <div class="theme-card-icon"><i class="ph-fill ph-car-profile"></i></div>
+                    <h3>Stockler Veículos</h3>
+                    <p>Gestão de Frotas e Locações</p>
+                    <span class="theme-badge">Tabelas: veiculos, clientes, locacoes</span>
+                </div>
+                
+                <!-- Theme 2: Fintech -->
+                <div class="theme-card" data-theme="fintech">
+                    <div class="theme-card-icon"><i class="ph-fill ph-bank"></i></div>
+                    <h3>Stockler Fintech</h3>
+                    <p>Setor Bancário e Pagamentos</p>
+                    <span class="theme-badge">Tabelas: clientes, contas, transacoes</span>
+                </div>
+                
+                <!-- Theme 3: Farma -->
+                <div class="theme-card" data-theme="farma">
+                    <div class="theme-card-icon"><i class="ph-fill ph-pill"></i></div>
+                    <h3>Stockler Farma</h3>
+                    <p>Indústria e Distribuição</p>
+                    <span class="theme-badge">Tabelas: produtos, fornecedores, vendas</span>
+                </div>
+
+                <!-- Theme 4: Saúde -->
+                <div class="theme-card" data-theme="saude">
+                    <div class="theme-card-icon"><i class="ph-fill ph-heartbeat"></i></div>
+                    <h3>Stockler Saúde</h3>
+                    <p>Planos de Saúde e Convênios</p>
+                    <span class="theme-badge">Tabelas: beneficiarios, hospitais, consultas</span>
+                </div>
+
+                <!-- Theme 5: Construtora -->
+                <div class="theme-card" data-theme="construtora">
+                    <div class="theme-card-icon"><i class="ph-fill ph-buildings"></i></div>
+                    <h3>Stockler Construtora</h3>
+                    <p>Obras e Incorporação</p>
+                    <span class="theme-badge">Tabelas: obras, funcionarios, materiais</span>
+                </div>
+
+                <!-- Theme 6: Varejo (AdventureWorks) -->
+                <div class="theme-card" data-theme="varejo">
+                    <div class="theme-card-icon"><i class="ph-fill ph-shopping-cart"></i></div>
+                    <h3>Stockler Varejo</h3>
+                    <p>E-commerce (AdventureWorks)</p>
+                    <span class="theme-badge">Tabelas: produtos, vendedores, vendas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon" id="header-logo-icon"><i class="ph-fill ph-database"></i></div>
+                <h1 id="app-title">SQL Masterclass</h1>
+            </div>
+            <div class="header-actions">
+                <button id="btn-certificate" class="btn-certificate hidden" title="Gerar Certificado de Conclusão">
+                    <i class="ph-fill ph-certificate"></i> Certificado
+                </button>
+                <button id="btn-change-theme" class="btn-outline-sm" title="Trocar de Empresa">
+                    <i class="ph-bold ph-swap"></i> Trocar Cenário
+                </button>
+                <button id="audio-toggle" class="btn-icon" title="Mutar/Desmutar Som">
+                    <i class="ph-fill ph-speaker-high" id="audio-icon"></i>
+                </button>
+                <div class="author">
+                    <span>Criado por <strong class="author-name" id="author-link">Gustavo Stockler</strong></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Certificate Modal -->
+        <div id="certificate-modal" class="theme-modal-overlay">
+            <div class="theme-modal-content certificate-modal-content">
+                <button id="btn-close-cert" class="theme-modal-close"><i class="ph-bold ph-x"></i></button>
+                <div class="cert-input-step" id="cert-step-1">
+                    <h2 class="theme-modal-title">Parabéns, Especialista!</h2>
+                    <p class="theme-modal-subtitle">Você concluiu todos os 10 módulos do treinamento. Como devemos escrever seu nome no certificado?</p>
+                    <input type="text" id="student-name-input" placeholder="Seu Nome Completo" class="cert-input">
+                    <button id="btn-generate-final" class="btn-run" style="width: 100%; margin-top: 20px;">Gerar Certificado PDF</button>
+                </div>
+                
+                <div class="cert-viewer hidden" id="cert-step-2">
+                    <div id="certificate-area" class="certificate-paper">
+                        <div class="cert-border">
+                            <div class="cert-content">
+                                <div class="cert-logo">
+                                    <i class="ph-fill ph-database"></i>
+                                    <span>STOCKLER SQL MASTERCLASS</span>
+                                </div>
+                                <h1 class="cert-title">CERTIFICADO</h1>
+                                <p class="cert-subtitle">Certificamos que</p>
+                                <h2 class="cert-student-name" id="display-student-name">NOME DO ALUNO</h2>
+                                <p class="cert-text">concluiu com êxito o treinamento avançado de SQL, abrangendo desde fundamentos básicos até subqueries, funções de janela e otimização de performance, totalizando 10 módulos de prática intensiva.</p>
+                                
+                                <div class="cert-footer">
+                                    <div class="cert-signature">
+                                        <div class="sig-line"></div>
+                                        <span>GUSTAVO STOCKLER</span>
+                                        <small>Instrutor & Fundador</small>
+                                    </div>
+                                    <div class="cert-date">
+                                        <span id="cert-date-display">02/05/2024</span>
+                                        <small>Data de Emissão</small>
+                                    </div>
+                                    <div class="cert-qr">
+                                        <i class="ph-bold ph-qr-code"></i>
+                                        <small>Validar Autenticidade</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="btn-print-cert" class="btn-outline" style="width: 100%; margin-top: 20px;">
+                        <i class="ph-bold ph-printer"></i> Imprimir ou Salvar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-body">
+            <!-- Left Sidebar: Lessons -->
+            <aside class="sidebar-left" id="panel-left">
+                <div class="sidebar-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <h2>Módulos</h2>
+                        <button id="btn-toggle-modules" class="btn-icon" style="font-size: 15px; padding: 0; margin-left: 4px;" title="Expandir/Recolher Todos os Módulos">
+                            <i class="ph-bold ph-arrows-in-line-vertical"></i>
+                        </button>
+                    </div>
+                    <button id="btn-sidebar-toggle" class="btn-collapse" title="Recolher Menu">
+                        <i id="sidebar-toggle-icon" class="ph-bold ph-caret-left"></i>
+                    </button>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Progresso do Curso</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div id="lesson-list" class="lesson-list">
+                    <!-- Modules and Lessons injected here via JS -->
+                </div>
+            </aside>
+
+            <!-- Drag Handle 1 -->
+            <div class="resizer" id="resizer-1"></div>
+
+            <!-- Center: Lesson Theory & Content -->
+            <section class="content-center" id="panel-center">
+                <div class="content-scroll-area">
+                    <div class="lesson-header">
+                        <div class="lesson-icon" id="lesson-icon">
+                            <i class="ph-fill ph-book-open"></i>
+                        </div>
+                        <h2 id="lesson-title">Carregando...</h2>
+                    </div>
+
+                    <div class="task-header">
+                        <i class="ph-fill ph-lightbulb"></i> Desafio
+                        <span class="task-badge" id="module-badge">Prática</span>
+                    </div>
+
+                    <!-- Improved Schema Section -->
+                    <div class="schema-section">
+                        <div class="schema-controls">
+                            <div class="schema-title">
+                                <i class="ph-fill ph-database"></i> <span id="schema-title-text">Estrutura de Dados</span>
+                            </div>
+                            <div class="view-toggle-container">
+                                <button id="view-tree-btn" class="toggle-btn active" title="Visualização em Árvore">
+                                    <i class="ph-bold ph-tree-structure"></i> Árvore
+                                </button>
+                                <button id="view-list-btn" class="toggle-btn" title="Visualização Simples">
+                                    <i class="ph-bold ph-list"></i> Lista
+                                </button>
+                            </div>
+                        </div>
+                        <div id="schema-list" class="object-explorer">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="lesson-task-box">
+                        <div id="lesson-theory" class="lesson-theory">Iniciando ambiente...</div>
+                        <div id="lesson-task" class="task-text">Aguarde...</div>
+                    </div>
+
+                    <!-- Solution Accordion -->
+                    <div class="solution-accordion" id="solution-accordion">
+                        <button class="accordion-toggle" id="solution-toggle">
+                            <span class="accordion-title">
+                                <i class="ph-fill ph-target"></i> Solução
+                            </span>
+                            <i class="ph ph-caret-down accordion-icon"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="solution-inner">
+                                <p>Solução Revelada</p>
+                                <div class="solution-code-box" id="solution-code">
+                                    -- Código da solução
+                                </div>
+                                <button id="copy-solution-btn" class="btn-outline">
+                                    <i class="ph ph-copy"></i> Copiar para o editor
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Drag Handle 2 -->
+            <div class="resizer" id="resizer-2"></div>
+
+            <!-- Right: Code Editor & Terminal -->
+            <section class="workspace-right" id="panel-right">
+                <!-- Editor Top Half -->
+                <div class="editor-section">
+                    <div class="panel-header">
+                        <div class="panel-tab active">SQL</div>
+                    </div>
+                    <div class="editor-wrapper">
+                        <textarea id="sql-editor"></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="action-bar-left">
+                        <div class="status-indicator" id="lesson-status">Pendente</div>
+                    </div>
+                    <div style="display:flex; gap: 12px;">
+                        <button id="next-lesson-btn" class="btn-next hidden">
+                            Próxima Lição <i class="ph-bold ph-arrow-right"></i>
+                        </button>
+                        <button id="run-btn" class="btn-run">
+                            <i class="ph-fill ph-play"></i> Executar Código
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Terminal Bottom Half -->
+                <div class="terminal-section">
+                    <div class="panel-header terminal-header">
+                        <div style="display:flex; gap: 16px;">
+                            <div class="panel-tab active" style="font-size: 11px; text-transform: uppercase;">Console</div>
+                        </div>
+                        <div id="feedback-message" class="feedback-badge hidden"></div>
+                    </div>
+                    <div class="terminal-wrapper" id="results-container">
+                        <div class="empty-state">
+                            <i class="ph-fill ph-terminal-window"></i>
+                            <p>Clique em Executar para ver a saída.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/sql/sql.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
