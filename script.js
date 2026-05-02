@@ -85,29 +85,29 @@ const themes = {
             INSERT INTO locacoes VALUES (1, 1, 2, 5, 475), (2, 2, 4, 3, 540), (3, 3, 7, 7, 1330), (4, 1, 1, 2, 180);
         `,
         lessons: [
-            { id: 0, moduleId: 1, title: "1. Inventário Total", icon: '<i class="ph-fill ph-car-profile"></i>', theory: "O primeiro passo é saber o que temos na garagem. Nossa frota está registrada na tabela <code>veiculos</code>.", task: "Escreva uma query para listar TODOS os dados (*) de todos os <code>veiculos</code>.", startCode: "SELECT \n\nFROM veiculos;", solution: "SELECT * \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('modelo') && res[0].values.length >= 8 },
-            { id: 1, moduleId: 1, title: "2. Foco no Preço", icon: '<i class="ph-fill ph-currency-dollar"></i>', theory: "Ao invés de ver a ficha completa, às vezes o cliente quer saber apenas o carro e quanto custa.", task: "Selecione apenas as colunas <code>modelo</code> e <code>valor_diaria</code> da tabela <code>veiculos</code>.", startCode: "SELECT \n    \nFROM veiculos;", solution: "SELECT modelo, valor_diaria \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].columns.includes('valor_diaria') },
-            { id: 2, moduleId: 1, title: "3. Categorias Únicas", icon: '<i class="ph-fill ph-fingerprint"></i>', theory: "Quais tipos de carros nós oferecemos? Usando <code>DISTINCT</code>, removemos repetições.", task: "Descubra quais são as diferentes categorias na frota. Selecione valores ÚNICOS da coluna <code>categoria</code> na tabela <code>veiculos</code>.", startCode: "SELECT DISTINCT \nFROM veiculos;", solution: "SELECT DISTINCT categoria \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.length === 1 && res[0].values.length === 3 },
-            { id: 3, moduleId: 2, title: "4. Apenas Disponíveis", icon: '<i class="ph-fill ph-funnel"></i>', theory: "Não podemos alugar um carro que já está alugado. O <code>WHERE</code> filtra linhas.", task: "Selecione todos os <code>veiculos</code> onde o <code>status</code> seja igual a 'Disponível'.", startCode: "SELECT * \nFROM veiculos\nWHERE ;", solution: "SELECT * \nFROM veiculos\nWHERE status = 'Disponível';", validator: (res) => res && res[0] && res[0].values.every(row => row[5] === 'Disponível') },
-            { id: 4, moduleId: 2, title: "5. SUVs Baratos", icon: '<i class="ph-fill ph-intersect"></i>', theory: "Combine condições usando <code>AND</code>.", task: "Busque veículos onde a <code>categoria</code> seja 'SUV' E o <code>valor_diaria</code> seja menor ou igual a 200.", startCode: "SELECT * \nFROM veiculos\nWHERE \nAND ;", solution: "SELECT * \nFROM veiculos\nWHERE categoria = 'SUV' \nAND valor_diaria <= 200;", validator: (res) => res && res[0] && res[0].values.every(row => row[3] === 'SUV' && row[4] <= 200) },
-            { id: 5, moduleId: 2, title: "6. Do Barato ao Caro", icon: '<i class="ph-fill ph-sort-ascending"></i>', theory: "Ordene os resultados com <code>ORDER BY coluna ASC</code> ou <code>DESC</code>.", task: "Selecione o <code>modelo</code> e o <code>valor_diaria</code> ordenados pelo valor da diária de forma crescente (ASC).", startCode: "SELECT modelo, valor_diaria \nFROM veiculos\nORDER BY ;", solution: "SELECT modelo, valor_diaria \nFROM veiculos\nORDER BY valor_diaria ASC;", validator: (res) => { if(!res || !res[0] || res[0].columns.length !== 2) return false; const vals = res[0].values; return vals[0][1] <= vals[1][1]; } },
-            { id: 6, moduleId: 2, title: "7. Top 3 Luxo", icon: '<i class="ph-fill ph-list-numbers"></i>', theory: "A cláusula <code>LIMIT X</code> restringe o retorno a X linhas.", task: "Recupere os 3 veículos mais caros da locadora. Ordene de forma decrescente e aplique LIMIT 3.", startCode: "SELECT * \nFROM veiculos\nORDER BY \nLIMIT ;", solution: "SELECT * \nFROM veiculos\nORDER BY valor_diaria DESC\nLIMIT 3;", validator: (res) => res && res[0] && res[0].values.length === 3 && res[0].values[0][4] >= res[0].values[1][4] },
+            { id: 0, moduleId: 1, title: "1. Inventário Total", icon: '<i class="ph-fill ph-car-profile"></i>', theory: "O comando <code>SELECT *</code> é a porta de entrada do SQL. Ele diz ao banco: 'Traga todas as colunas de todas as linhas'. É ideal para um primeiro contato com os dados e para entender o que está registrado na tabela.", task: "Escreva uma query para listar TODOS os dados (*) de todos os <code>veiculos</code>.", startCode: "SELECT \n\nFROM veiculos;", solution: "SELECT *\nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('modelo') && res[0].values.length >= 8 },
+            { id: 1, moduleId: 1, title: "2. Apelidos & Colunas (AS)", icon: '<i class="ph-fill ph-currency-dollar"></i>', theory: "Podemos escolher quais colunas ver e até dar um 'apelido' para elas usando a palavra <code>AS</code>. Isso ajuda a deixar o resultado mais amigável.", task: "Selecione as colunas <code>modelo</code> e <code>valor_diaria</code> da tabela <code>veiculos</code>. Use <code>AS</code> para renomear <code>valor_diaria</code> para 'Preço'.", startCode: "SELECT \n    \nFROM veiculos;", solution: "SELECT \n    modelo, \n    valor_diaria AS 'Preço'\nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].columns.includes('Preço') },
+            { id: 2, moduleId: 1, title: "3. Categorias Únicas", icon: '<i class="ph-fill ph-fingerprint"></i>', theory: "Quais tipos de carros nós oferecemos? Usando <code>DISTINCT</code>, removemos repetições.", task: "Descubra quais são as diferentes categorias na frota. Selecione valores ÚNICOS da coluna <code>categoria</code> na tabela <code>veiculos</code>.", startCode: "SELECT DISTINCT \n    \nFROM veiculos;", solution: "SELECT DISTINCT \n    categoria \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.length === 1 && res[0].values.length === 3 },
+            { id: 3, moduleId: 2, title: "4. Apenas Disponíveis", icon: '<i class="ph-fill ph-funnel"></i>', theory: "A cláusula <code>WHERE</code> funciona como um filtro. Com ela, você pode extrair apenas as linhas que atendem a um critério específico (como um status, uma data ou um valor). É a base para criar relatórios específicos.", task: "Selecione todos os <code>veiculos</code> onde o <code>status</code> seja igual a 'Disponível'.", startCode: "SELECT \n    *\nFROM veiculos\nWHERE ;", solution: "SELECT \n    *\nFROM veiculos\nWHERE status = 'Disponível';", validator: (res) => res && res[0] && res[0].values.every(row => row[5] === 'Disponível') },
+            { id: 4, moduleId: 2, title: "5. SUVs Baratos", icon: '<i class="ph-fill ph-intersect"></i>', theory: "Combine condições usando <code>AND</code>.", task: "Busque veículos onde a <code>categoria</code> seja 'SUV' E o <code>valor_diaria</code> seja menor ou igual a 200.", startCode: "SELECT * \nFROM veiculos\nWHERE \nAND ;", solution: "SELECT *\nFROM veiculos\nWHERE categoria = 'SUV'\n  AND valor_diaria <= 200;", validator: (res) => res && res[0] && res[0].values.every(row => row[3] === 'SUV' && row[4] <= 200) },
+            { id: 5, moduleId: 2, title: "6. Do Barato ao Caro", icon: '<i class="ph-fill ph-sort-ascending"></i>', theory: "Ordene os resultados com <code>ORDER BY coluna ASC</code> ou <code>DESC</code>.", task: "Selecione o <code>modelo</code> e o <code>valor_diaria</code> ordenados pelo valor da diária de forma crescente (ASC).", startCode: "SELECT modelo, valor_diaria \nFROM veiculos\nORDER BY ;", solution: "SELECT \n    modelo, \n    valor_diaria\nFROM veiculos\nORDER BY valor_diaria ASC;", validator: (res) => { if(!res || !res[0] || res[0].columns.length !== 2) return false; const vals = res[0].values; return vals[0][1] <= vals[1][1]; } },
+            { id: 6, moduleId: 2, title: "7. Top 3 Luxo", icon: '<i class="ph-fill ph-list-numbers"></i>', theory: "A cláusula <code>LIMIT X</code> restringe o retorno a X linhas.", task: "Recupere os 3 veículos mais caros da locadora. Ordene de forma decrescente e aplique LIMIT 3.", startCode: "SELECT \n    *\nFROM veiculos\nORDER BY \nLIMIT ;", solution: "SELECT \n    *\nFROM veiculos\nORDER BY valor_diaria DESC\nLIMIT 3;", validator: (res) => res && res[0] && res[0].values.length === 3 && res[0].values[0][4] >= res[0].values[1][4] },
             { id: 7, moduleId: 3, title: "8. Contagem Total", icon: '<i class="ph-fill ph-math-operations"></i>', theory: "A função <code>COUNT(*)</code> conta quantas linhas existem.", task: "Conte quantos veículos nós temos cadastrados na tabela <code>veiculos</code>.", startCode: "SELECT \nFROM veiculos;", solution: "SELECT COUNT(*) \nFROM veiculos;", validator: (res) => res && res[0] && res[0].values[0][0] >= 8 },
-            { id: 8, moduleId: 3, title: "9. Faturamento Potencial", icon: '<i class="ph-fill ph-calculator"></i>', theory: "Usando <code>SUM(coluna)</code> obtemos somas matemáticas.", task: "Calcule a soma (SUM) do <code>valor_total</code> de todas as locações já realizadas na tabela <code>locacoes</code>.", startCode: "SELECT \nFROM locacoes;", solution: "SELECT SUM(valor_total) \nFROM locacoes;", validator: (res) => res && res[0] && res[0].values[0][0] > 1000 },
-            { id: 9, moduleId: 3, title: "10. Agrupando Categorias", icon: '<i class="ph-fill ph-squares-four"></i>', theory: "O <code>GROUP BY</code> junta linhas que têm os mesmos valores.", task: "Mostre a <code>categoria</code> e conte quantos carros existem em cada uma usando <code>COUNT(*)</code>.", startCode: "SELECT categoria, \nFROM veiculos\nGROUP BY ;", solution: "SELECT categoria, COUNT(*) \nFROM veiculos\nGROUP BY categoria;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length === 3 },
-            { id: 10, moduleId: 4, title: "11. Quem alugou o quê?", icon: '<i class="ph-fill ph-link"></i>', theory: "Ligamos duas tabelas usando suas chaves com o <code>JOIN</code>.", task: "Faça um JOIN de <code>locacoes</code> com <code>clientes</code> ligando <code>cliente_id</code> com <code>id</code> do cliente. Selecione nome e dias alugados.", startCode: "SELECT clientes.nome, locacoes.dias\nFROM locacoes\nJOIN clientes \nON locacoes.cliente_id = ;", solution: "SELECT clientes.nome, locacoes.dias\nFROM locacoes\nJOIN clientes \nON locacoes.cliente_id = clientes.id;", validator: (res) => res && res[0] && res[0].columns.includes('nome') && res[0].values.length >= 4 },
-            { id: 11, moduleId: 4, title: "12. Triplo JOIN", icon: '<i class="ph-fill ph-git-merge"></i>', theory: "Podemos encadear vários JOINs para ligar várias tabelas.", task: "Faça um JOIN de locacoes com clientes, e depois com veiculos. Selecione clientes.nome e veiculos.modelo.", startCode: "SELECT clientes.nome, veiculos.modelo\nFROM locacoes\nJOIN clientes ON locacoes.cliente_id = clientes.id\nJOIN veiculos ON ;", solution: "SELECT clientes.nome, veiculos.modelo\nFROM locacoes\nJOIN clientes ON locacoes.cliente_id = clientes.id\nJOIN veiculos ON locacoes.veiculo_id = veiculos.id;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length >= 4 },
+            { id: 8, moduleId: 3, title: "9. Faturamento Potencial", icon: '<i class="ph-fill ph-calculator"></i>', theory: "Usando <code>SUM(coluna)</code> obtemos somas matemáticas.", task: "Calcule a soma (SUM) do <code>valor_total</code> de todas as locações já realizadas na tabela <code>locacoes</code>.", startCode: "SELECT \n    SUM()\nFROM locacoes;", solution: "SELECT \n    SUM(valor_total) \nFROM locacoes;", validator: (res) => res && res[0] && res[0].values[0][0] > 1000 },
+            { id: 9, moduleId: 3, title: "10. Agrupando Categorias", icon: '<i class="ph-fill ph-squares-four"></i>', theory: "O <code>GROUP BY</code> junta linhas que têm os mesmos valores.", task: "Mostre a <code>categoria</code> e conte quantos carros existem em cada uma usando <code>COUNT(*)</code>.", startCode: "SELECT \n    categoria, \n    COUNT(*)\nFROM veiculos\nGROUP BY ;", solution: "SELECT \n    categoria, \n    COUNT(*)\nFROM veiculos\nGROUP BY categoria;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length === 3 },
+            { id: 10, moduleId: 4, title: "11. Quem alugou o quê?", icon: '<i class="ph-fill ph-link"></i>', theory: "O <code>JOIN</code> é a função mais poderosa do SQL. Ele permite 'unir' duas tabelas diferentes através de uma coluna em comum (como um ID). Isso permite ver, por exemplo, o nome do cliente ao lado do carro que ele alugou.", task: "Faça um JOIN de <code>locacoes</code> com <code>clientes</code> ligando <code>cliente_id</code> com <code>id</code> do cliente. Selecione nome e dias alugados.", startCode: "SELECT clientes.nome, locacoes.dias\nFROM locacoes\nJOIN clientes \nON locacoes.cliente_id = ;", solution: "SELECT \n    c.nome, \n    l.dias\nFROM locacoes l\nJOIN clientes c ON l.cliente_id = c.id;", validator: (res) => res && res[0] && res[0].columns.includes('nome') && res[0].values.length >= 4 },
+            { id: 11, moduleId: 4, title: "12. Triplo JOIN", icon: '<i class="ph-fill ph-git-merge"></i>', theory: "Podemos encadear vários JOINs para ligar várias tabelas.", task: "Faça um JOIN de locacoes com clientes, e depois com veiculos. Selecione clientes.nome e veiculos.modelo.", startCode: "SELECT \n    clientes.nome, \n    veiculos.modelo\nFROM locacoes\nJOIN clientes ON locacoes.cliente_id = clientes.id\nJOIN veiculos ON ;", solution: "SELECT \n    c.nome, \n    v.modelo\nFROM locacoes l\nJOIN clientes c ON l.cliente_id = c.id\nJOIN veiculos v ON l.veiculo_id = v.id;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length >= 4 },
             { id: 12, moduleId: 5, title: "13. Comprando um Carro", icon: '<i class="ph-fill ph-plus-circle"></i>', theory: "Chegou um carro novo! Use <code>INSERT INTO</code>.", task: "Insira um 'Corolla' da marca 'Toyota', categoria 'Sedan', valor 200, status 'Disponível'.", startCode: "INSERT INTO veiculos (modelo, marca, categoria, valor_diaria, status)\nVALUES ('', '', '', , '');\n\nSELECT * FROM veiculos;", solution: "INSERT INTO veiculos (modelo, marca, categoria, valor_diaria, status)\nVALUES ('Corolla', 'Toyota', 'Sedan', 200, 'Disponível');\n\nSELECT * FROM veiculos;", validator: (res) => res && res[0] && res[0].values.some(row => row[1] === 'Corolla') },
             { id: 13, moduleId: 5, title: "14. Atualizando Preço", icon: '<i class="ph-fill ph-pencil-simple"></i>', theory: "A diária subiu! Usamos <code>UPDATE</code>.", task: "Aumente o <code>valor_diaria</code> do 'Corolla' para 220.", startCode: "UPDATE veiculos\nSET valor_diaria = \nWHERE modelo = '';\n\nSELECT * FROM veiculos WHERE modelo = 'Corolla';", solution: "UPDATE veiculos\nSET valor_diaria = 220\nWHERE modelo = 'Corolla';\n\nSELECT * FROM veiculos WHERE modelo = 'Corolla';", validator: (res) => res && res[0] && res[0].values.some(row => row[1] === 'Corolla' && row[4] === 220) },
             { id: 14, moduleId: 5, title: "15. Venda de Frota", icon: '<i class="ph-fill ph-trash"></i>', theory: "Vamos remover com <code>DELETE</code>.", task: "Delete o veículo cujo modelo é 'HB20'.", startCode: "DELETE FROM veiculos\nWHERE modelo = '';\n\nSELECT * FROM veiculos;", solution: "DELETE FROM veiculos\nWHERE modelo = 'HB20';\n\nSELECT * FROM veiculos;", validator: (res) => res && res[0] && !res[0].values.some(row => row[1] === 'HB20') },
-            { id: 15, moduleId: 6, title: "16. Acima da Média", icon: '<i class="ph-fill ph-trend-up"></i>', theory: "Subqueries permitem usar o resultado de uma consulta dentro de outra.", task: "Selecione os veículos cujo <code>valor_diaria</code> seja maior que a média de todos os veículos.", startCode: "SELECT * FROM veiculos \nWHERE valor_diaria > (SELECT ...);", solution: "SELECT * FROM veiculos \nWHERE valor_diaria > (SELECT AVG(valor_diaria) FROM veiculos);", validator: (res) => res && res[0] && res[0].values.length < 8 && res[0].values.every(row => row[4] > 100) },
-            { id: 16, moduleId: 7, title: "17. Ranking de Preços", icon: '<i class="ph-fill ph-medal"></i>', theory: "Funções de Janela calculam valores sobre um conjunto de linhas.", task: "Use <code>RANK() OVER(ORDER BY valor_diaria DESC)</code> para criar um ranking de preços.", startCode: "SELECT modelo, valor_diaria, \nRANK() OVER(...) as ranking \nFROM veiculos;", solution: "SELECT modelo, valor_diaria, RANK() OVER(ORDER BY valor_diaria DESC) as ranking FROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('ranking') },
-            { id: 17, moduleId: 8, title: "18. Categorização de Luxo", icon: '<i class="ph-fill ph-brackets-curly"></i>', theory: "O <code>CASE WHEN</code> cria lógica condicional diretamente no SELECT.", task: "Se o valor for > 200, chame de 'Luxo', senão 'Econômico'.", startCode: "SELECT modelo, \nCASE WHEN valor_diaria > 200 THEN 'Luxo' \nELSE 'Econômico' END as classe \nFROM veiculos;", solution: "SELECT modelo, CASE WHEN valor_diaria > 200 THEN 'Luxo' ELSE 'Econômico' END as classe FROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('classe') },
-            { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> converte texto para MAIÚSCULAS, <b>LOWER()</b> para minúsculas. Ex: <code>SELECT UPPER('honda') → HONDA</code>.", task: "Selecione o <code>modelo</code> em maiúsculas (UPPER) e a <code>marca</code> em minúsculas (LOWER) dos veículos.", startCode: "SELECT UPPER(modelo), LOWER(marca) \nFROM veiculos;", solution: "SELECT UPPER(modelo), LOWER(marca) FROM veiculos;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
-            { id: 19, moduleId: 9, title: "20. LEFT / RIGHT / LENGTH", icon: '<i class="ph-fill ph-scissors"></i>', theory: "<b>SUBSTR(texto, inicio, qtd)</b> extrai partes do texto (equivalente ao LEFT/RIGHT do SQL Server). <b>LENGTH()</b> conta caracteres.", task: "Selecione os primeiros 3 caracteres do campo <code>modelo</code> como 'sigla', e o total de caracteres como 'tamanho'.", startCode: "SELECT SUBSTR(modelo, 1, 3) as sigla, LENGTH(modelo) as tamanho \nFROM veiculos;", solution: "SELECT SUBSTR(modelo, 1, 3) as sigla, LENGTH(modelo) as tamanho FROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('sigla') && res[0].columns.includes('tamanho') },
-            { id: 20, moduleId: 9, title: "21. REPLACE / CONCAT", icon: '<i class="ph-fill ph-arrows-left-right"></i>', theory: "<b>REPLACE(campo, 'de', 'para')</b> substitui texto. O operador <b>||</b> concatena (junta) strings — equivalente ao CONCAT() do SQL Server.", task: "Crie uma coluna 'descricao' juntando <code>marca</code>, um espaço e <code>modelo</code> com <code>||</code>. Também substitua 'Jeep' por 'JEEP' no campo marca.", startCode: "SELECT marca || ' ' || modelo as descricao,\n       REPLACE(marca, 'Jeep', 'JEEP') as marca_upper\nFROM veiculos;", solution: "SELECT marca || ' ' || modelo as descricao, REPLACE(marca, 'Jeep', 'JEEP') as marca_upper FROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('descricao') },
-            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>DATE('now')</b> retorna a data atual. <b>STRFTIME('%Y', data)</b> extrai o ano. <b>julianday()</b> permite calcular diferenças de datas (equivalente ao DATEDIFF).", task: "Nas locações, mostre o <code>id</code> e calcule quantos dias se passaram desde a locação: use <code>julianday('now') - julianday('2024-01-01')</code> como 'dias_decorridos'.", startCode: "SELECT id, \n  CAST(julianday('now') - julianday('2024-01-01') AS INTEGER) as dias_decorridos\nFROM locacoes;", solution: "SELECT id, CAST(julianday('now') - julianday('2024-01-01') AS INTEGER) as dias_decorridos FROM locacoes;", validator: (res) => res && res[0] && res[0].columns.includes('dias_decorridos') },
-            { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-lightning"></i>', theory: "Índices aceleram buscas em tabelas grandes. Crie com <code>CREATE INDEX nome ON tabela(coluna)</code>.", task: "Crie um índice chamado <code>idx_modelo</code> na coluna <code>modelo</code> da tabela veiculos.", startCode: "CREATE INDEX ... ON ...(...);", solution: "CREATE INDEX idx_modelo ON veiculos(modelo);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('veiculos')"); return check[0].values.some(v => v[1] === 'idx_modelo'); } catch(e) { return false; } } }
+            { id: 15, moduleId: 6, title: "16. Acima da Média", icon: '<i class="ph-fill ph-trend-up"></i>', theory: "Subqueries permitem usar o resultado de uma consulta dentro de outra.", task: "Selecione os veículos cujo <code>valor_diaria</code> seja maior que a média de todos os veículos.", startCode: "SELECT \n    *\nFROM veiculos \nWHERE valor_diaria > (\n    SELECT ...\n);", solution: "SELECT \n    *\nFROM veiculos \nWHERE valor_diaria > (\n    SELECT AVG(valor_diaria) FROM veiculos\n);", validator: (res) => res && res[0] && res[0].values.length < 8 && res[0].values.every(row => row[4] > 100) },
+            { id: 16, moduleId: 7, title: "17. Ranking de Preços", icon: '<i class="ph-fill ph-medal"></i>', theory: "Funções de Janela calculam valores sobre um conjunto de linhas.", task: "Use <code>RANK() OVER(ORDER BY valor_diaria DESC)</code> para criar um ranking de preços.", startCode: "SELECT \n    modelo, \n    valor_diaria, \n    RANK() OVER(...) as ranking \nFROM veiculos;", solution: "SELECT \n    modelo, \n    valor_diaria, \n    RANK() OVER(ORDER BY valor_diaria DESC) as ranking \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('ranking') },
+            { id: 17, moduleId: 8, title: "18. Categorização de Luxo", icon: '<i class="ph-fill ph-brackets-curly"></i>', theory: "O <code>CASE WHEN</code> cria lógica condicional diretamente no SELECT.", task: "Se o valor for > 200, chame de 'Luxo', senão 'Econômico'.", startCode: "SELECT \n    modelo, \n    CASE \n        WHEN valor_diaria > 200 THEN 'Luxo' \n        ELSE 'Econômico' \n    END as classe \nFROM veiculos;", solution: "SELECT \n    modelo, \n    CASE \n        WHEN valor_diaria > 200 THEN 'Luxo' \n        ELSE 'Econômico' \n    END as classe \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('classe') },
+            { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> converte texto para MAIÚSCULAS, <b>LOWER()</b> para minúsculas. Ex: <code>SELECT UPPER('honda') → HONDA</code>.", task: "Selecione o <code>modelo</code> em maiúsculas (UPPER) e a <code>marca</code> em minúsculas (LOWER) dos veículos.", startCode: "SELECT \n    UPPER(modelo), \n    LOWER(marca) \nFROM veiculos;", solution: "SELECT \n    UPPER(modelo), \n    LOWER(marca) \nFROM veiculos;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
+            { id: 19, moduleId: 9, title: "20. LEFT / RIGHT / LENGTH", icon: '<i class="ph-fill ph-scissors"></i>', theory: "<b>SUBSTR(texto, inicio, qtd)</b> extrai partes do texto (equivalente ao LEFT/RIGHT do SQL Server). <b>LENGTH()</b> conta caracteres.", task: "Selecione os primeiros 3 caracteres do campo <code>modelo</code> como 'sigla', e o total de caracteres como 'tamanho'.", startCode: "SELECT \n    SUBSTR(modelo, 1, 3) AS sigla, \n    LENGTH(modelo) AS tamanho \nFROM veiculos;", solution: "SELECT \n    SUBSTR(modelo, 1, 3) AS sigla, \n    LENGTH(modelo) AS tamanho \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('sigla') && res[0].columns.includes('tamanho') },
+            { id: 20, moduleId: 9, title: "21. REPLACE / CONCAT", icon: '<i class="ph-fill ph-arrows-left-right"></i>', theory: "<b>REPLACE(campo, 'de', 'para')</b> substitui texto. O operador <b>||</b> concatena (junta) strings — equivalente ao CONCAT() do SQL Server.", task: "Crie uma coluna 'descricao' juntando <code>marca</code>, um espaço e <code>modelo</code> com <code>||</code>. Também substitua 'Jeep' por 'JEEP' no campo marca.", startCode: "SELECT \n    marca || ' ' || modelo AS descricao,\n    REPLACE(marca, 'Jeep', 'JEEP') AS marca_upper\nFROM veiculos;", solution: "SELECT \n    marca || ' ' || modelo AS descricao, \n    REPLACE(marca, 'Jeep', 'JEEP') AS marca_upper \nFROM veiculos;", validator: (res) => res && res[0] && res[0].columns.includes('descricao') },
+            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>DATE('now')</b> retorna a data atual. <b>STRFTIME('%Y', data)</b> extrai o ano. <b>julianday()</b> permite calcular diferenças de datas (equivalente ao DATEDIFF).", task: "Nas locações, mostre o <code>id</code> e calcule quantos dias se passaram desde a locação: use <code>julianday('now') - julianday('2024-01-01')</code> como 'dias_decorridos'.", startCode: "SELECT \n    id, \n    CAST(julianday('now') - julianday('2024-01-01') AS INTEGER) as dias_decorridos\nFROM locacoes;", solution: "SELECT \n    id, \n    CAST(julianday('now') - julianday('2024-01-01') AS INTEGER) as dias_decorridos \nFROM locacoes;", validator: (res) => res && res[0] && res[0].columns.includes('dias_decorridos') },
+            { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-lightning"></i>', theory: "Índices aceleram buscas em tabelas grandes. Se você tentar criar um índice que já existe, o banco retornará erro. Para evitar isso, usamos <code>CREATE INDEX IF NOT EXISTS</code>.", task: "Crie um índice chamado <code>idx_modelo</code> na coluna <code>modelo</code> da tabela veiculos (use IF NOT EXISTS).", startCode: "CREATE INDEX IF NOT EXISTS ... ON ...(...);", solution: "CREATE INDEX IF NOT EXISTS idx_modelo ON veiculos(modelo);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('veiculos')"); return check[0].values.some(v => v[1] === 'idx_modelo'); } catch(e) { return false; } } }
         ]
     },
     fintech: {
@@ -122,34 +122,34 @@ const themes = {
             CREATE TABLE clientes (id INTEGER PRIMARY KEY, nome TEXT, cpf TEXT, tipo_conta TEXT);
             CREATE TABLE contas (id INTEGER PRIMARY KEY, cliente_id INTEGER, saldo INTEGER, limite_credito INTEGER, status TEXT, FOREIGN KEY(cliente_id) REFERENCES clientes(id));
             CREATE TABLE transacoes (id INTEGER PRIMARY KEY, conta_id INTEGER, tipo TEXT, valor INTEGER, data_hora TEXT, FOREIGN KEY(conta_id) REFERENCES contas(id));
-            INSERT INTO clientes VALUES (1, 'Empresa XYZ', '11111111111', 'PJ'), (2, 'Gustavo Stockler', '22222222222', 'PF'), (3, 'Maria Oliveira', '33333333333', 'PF');
+            INSERT INTO clientes VALUES (1, 'Empresa XYZ', '11111111111', 'PJ'), (2, 'João da Silva', '22222222222', 'PF'), (3, 'Maria Oliveira', '33333333333', 'PF');
             INSERT INTO contas VALUES (1, 1, 150000, 50000, 'Ativa'), (2, 2, 5000, 10000, 'Ativa'), (3, 3, 200, 500, 'Bloqueada');
             INSERT INTO transacoes VALUES (1, 1, 'Deposito', 5000, '2023-10-01'), (2, 1, 'Saque', 1000, '2023-10-02'), (3, 2, 'PIX Recebido', 500, '2023-10-02'), (4, 3, 'Saque', 50, '2023-10-03');
         `,
         lessons: [
-            { id: 0, moduleId: 1, title: "1. Carteira Total", icon: '<i class="ph-fill ph-users"></i>', theory: "Bem-vindo ao Banco! Vamos conhecer nossa base de clientes registrada na tabela <code>clientes</code>.", task: "Escreva uma query para listar TODOS os dados (*) de todos os <code>clientes</code>.", startCode: "SELECT \n\nFROM clientes;", solution: "SELECT * \nFROM clientes;", validator: (res) => res && res[0] && res[0].columns.includes('cpf') && res[0].values.length >= 3 },
-            { id: 1, moduleId: 1, title: "2. Foco no Saldo", icon: '<i class="ph-fill ph-wallet"></i>', theory: "Muitas vezes, a auditoria pede apenas o ID da conta e o saldo disponível.", task: "Selecione apenas as colunas <code>id</code> e <code>saldo</code> da tabela <code>contas</code>.", startCode: "SELECT \n    \nFROM contas;", solution: "SELECT id, saldo \nFROM contas;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].columns.includes('saldo') },
-            { id: 2, moduleId: 1, title: "3. Tipos Únicos", icon: '<i class="ph-fill ph-fingerprint"></i>', theory: "Quais tipos de transações ocorrem na agência? Usamos <code>DISTINCT</code> para valores únicos.", task: "Descubra quais são os diferentes tipos de transação. Selecione valores ÚNICOS da coluna <code>tipo</code> na tabela <code>transacoes</code>.", startCode: "SELECT DISTINCT \nFROM transacoes;", solution: "SELECT DISTINCT tipo \nFROM transacoes;", validator: (res) => res && res[0] && res[0].columns.length === 1 && res[0].values.length === 3 },
-            { id: 3, moduleId: 2, title: "4. Contas Bloqueadas", icon: '<i class="ph-fill ph-lock-key"></i>', theory: "O <code>WHERE</code> ajuda a encontrar contas problemáticas.", task: "Selecione todas as <code>contas</code> onde o <code>status</code> seja igual a 'Bloqueada'.", startCode: "SELECT * \nFROM contas\nWHERE ;", solution: "SELECT * \nFROM contas\nWHERE status = 'Bloqueada';", validator: (res) => res && res[0] && res[0].values.every(row => row[4] === 'Bloqueada') },
-            { id: 4, moduleId: 2, title: "5. PF com Alto Limite", icon: '<i class="ph-fill ph-credit-card"></i>', theory: "Analistas precisam cruzar filtros com o <code>AND</code>.", task: "Busque clientes na tabela <code>clientes</code> onde o <code>tipo_conta</code> seja 'PF' E o <code>nome</code> seja 'Gustavo Stockler'.", startCode: "SELECT * \nFROM clientes\nWHERE \nAND ;", solution: "SELECT * \nFROM clientes\nWHERE tipo_conta = 'PF' \nAND nome = 'Gustavo Stockler';", validator: (res) => res && res[0] && res[0].values.length === 1 && res[0].values[0][1] === 'Gustavo Stockler' },
-            { id: 5, moduleId: 2, title: "6. Ordenar por Saldo", icon: '<i class="ph-fill ph-sort-descending"></i>', theory: "Organize o extrato. Ordene com <code>ORDER BY coluna ASC</code> ou <code>DESC</code>.", task: "Selecione o <code>cliente_id</code> e o <code>saldo</code> das contas, ordenados pelo saldo de forma decrescente (DESC).", startCode: "SELECT cliente_id, saldo \nFROM contas\nORDER BY ;", solution: "SELECT cliente_id, saldo \nFROM contas\nORDER BY saldo DESC;", validator: (res) => { if(!res || !res[0]) return false; const vals = res[0].values; return vals[0][1] >= vals[1][1]; } },
-            { id: 6, moduleId: 2, title: "7. Maior Transação", icon: '<i class="ph-fill ph-star"></i>', theory: "Ache a maior transação do dia combinando ORDER BY e LIMIT.", task: "Recupere a 1 transação de maior valor da tabela. Ordene o valor decrescente e use LIMIT 1.", startCode: "SELECT * \nFROM transacoes\nORDER BY \nLIMIT ;", solution: "SELECT * \nFROM transacoes\nORDER BY valor DESC\nLIMIT 1;", validator: (res) => res && res[0] && res[0].values.length === 1 && res[0].values[0][3] === 5000 },
+            { id: 0, moduleId: 1, title: "1. Carteira Total", icon: '<i class="ph-fill ph-users"></i>', theory: "Bem-vindo ao Banco! Vamos conhecer nossa base de clientes registrada na tabela <code>clientes</code>.", task: "Escreva uma query para listar TODOS os dados (*) de todos os <code>clientes</code>.", startCode: "SELECT \n\nFROM clientes;", solution: "SELECT *\nFROM clientes;", validator: (res) => res && res[0] && res[0].columns.includes('cpf') && res[0].values.length >= 3 },
+            { id: 1, moduleId: 1, title: "2. Apelidos & Saldo (AS)", icon: '<i class="ph-fill ph-wallet"></i>', theory: "Muitas vezes, a auditoria pede apenas o ID da conta e o saldo disponível. Use <code>AS</code> para renomear as colunas e facilitar a leitura.", task: "Selecione o <code>id</code> e o <code>saldo</code> da tabela <code>contas</code>. Renomeie <code>saldo</code> para 'Saldo_Disponivel'.", startCode: "SELECT \n    id, \n    saldo\nFROM contas;", solution: "SELECT \n    id, \n    saldo AS Saldo_Disponivel\nFROM contas;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].columns.includes('Saldo_Disponivel') },
+            { id: 2, moduleId: 1, title: "3. Tipos Únicos", icon: '<i class="ph-fill ph-fingerprint"></i>', theory: "Quais tipos de transações ocorrem na agência? Usamos <code>DISTINCT</code> para valores únicos.", task: "Descubra quais são as diferentes tipos de transação. Selecione valores ÚNICOS da coluna <code>tipo</code> na tabela <code>transacoes</code>.", startCode: "SELECT DISTINCT \n    \nFROM transacoes;", solution: "SELECT DISTINCT \n    tipo \nFROM transacoes;", validator: (res) => res && res[0] && res[0].columns.length === 1 && res[0].values.length === 3 },
+            { id: 3, moduleId: 2, title: "4. Contas Bloqueadas", icon: '<i class="ph-fill ph-lock-key"></i>', theory: "O <code>WHERE</code> ajuda a encontrar contas problemáticas.", task: "Selecione todas as <code>contas</code> onde o <code>status</code> seja igual a 'Bloqueada'.", startCode: "SELECT \n    *\nFROM contas\nWHERE ;", solution: "SELECT \n    *\nFROM contas\nWHERE status = 'Bloqueada';", validator: (res) => res && res[0] && res[0].values.every(row => row[4] === 'Bloqueada') },
+            { id: 4, moduleId: 2, title: "5. PF com Alto Limite", icon: '<i class="ph-fill ph-credit-card"></i>', theory: "Analistas precisam cruzar filtros com o <code>AND</code>.", task: "Busque clientes na tabela <code>clientes</code> onde o <code>tipo_conta</code> seja 'PF' E o <code>nome</code> seja 'João da Silva'.", startCode: "SELECT * \nFROM clientes\nWHERE \nAND ;", solution: "SELECT *\nFROM clientes\nWHERE tipo_conta = 'PF'\n  AND nome = 'João da Silva';", validator: (res) => res && res[0] && res[0].values.length === 1 && res[0].values[0][1] === 'João da Silva' },
+            { id: 5, moduleId: 2, title: "6. Ordenar por Saldo", icon: '<i class="ph-fill ph-sort-descending"></i>', theory: "Organize o extrato. Ordene com <code>ORDER BY coluna ASC</code> ou <code>DESC</code>.", task: "Selecione o <code>cliente_id</code> e o <code>saldo</code> das contas, ordenados pelo saldo de forma decrescente (DESC).", startCode: "SELECT cliente_id, saldo \nFROM contas\nORDER BY ;", solution: "SELECT \n    cliente_id, \n    saldo\nFROM contas\nORDER BY saldo DESC;", validator: (res) => { if(!res || !res[0]) return false; const vals = res[0].values; return vals[0][1] >= vals[1][1]; } },
+            { id: 6, moduleId: 2, title: "7. Maior Transação", icon: '<i class="ph-fill ph-star"></i>', theory: "Ache a maior transação do dia combinando ORDER BY e LIMIT.", task: "Recupere a 1 transação de maior valor da tabela. Ordene o valor decrescente e use LIMIT 1.", startCode: "SELECT * \nFROM transacoes\nORDER BY \nLIMIT ;", solution: "SELECT *\nFROM transacoes\nORDER BY valor DESC\nLIMIT 1;", validator: (res) => res && res[0] && res[0].values.length === 1 && res[0].values[0][3] === 5000 },
             { id: 7, moduleId: 3, title: "8. Total de Clientes", icon: '<i class="ph-fill ph-math-operations"></i>', theory: "A função <code>COUNT(*)</code> conta os registros de uma tabela.", task: "Conte quantos clientes nós temos cadastrados na tabela <code>clientes</code>.", startCode: "SELECT \nFROM clientes;", solution: "SELECT COUNT(*) \nFROM clientes;", validator: (res) => res && res[0] && res[0].values[0][0] >= 3 },
             { id: 8, moduleId: 3, title: "9. Dinheiro em Caixa", icon: '<i class="ph-fill ph-vault"></i>', theory: "O BACEN exige a soma total dos saldos usando <code>SUM(coluna)</code>.", task: "Calcule a soma (SUM) do <code>saldo</code> de todas as contas na tabela <code>contas</code>.", startCode: "SELECT \nFROM contas;", solution: "SELECT SUM(saldo) \nFROM contas;", validator: (res) => res && res[0] && res[0].values[0][0] > 150000 },
             { id: 9, moduleId: 3, title: "10. Contas por Tipo", icon: '<i class="ph-fill ph-chart-pie-slice"></i>', theory: "Agrupe dados da agência com o <code>GROUP BY</code>.", task: "Mostre o <code>tipo_conta</code> e conte quantos clientes existem em cada tipo usando <code>COUNT(*)</code>.", startCode: "SELECT tipo_conta, \nFROM clientes\nGROUP BY ;", solution: "SELECT tipo_conta, COUNT(*) \nFROM clientes\nGROUP BY tipo_conta;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length === 2 },
             { id: 10, moduleId: 4, title: "11. Nome do Correntista", icon: '<i class="ph-fill ph-link"></i>', theory: "Para saber o nome do dono da conta, precisamos do <code>JOIN</code>.", task: "Faça um JOIN de <code>contas</code> com <code>clientes</code> ligando <code>cliente_id</code> com <code>id</code> do cliente. Selecione nome e saldo.", startCode: "SELECT clientes.nome, contas.saldo\nFROM contas\nJOIN clientes \nON contas.cliente_id = ;", solution: "SELECT clientes.nome, contas.saldo\nFROM contas\nJOIN clientes \nON contas.cliente_id = clientes.id;", validator: (res) => res && res[0] && res[0].columns.includes('nome') && res[0].values.length >= 3 },
-            { id: 11, moduleId: 4, title: "12. Rastreio de Transação", icon: '<i class="ph-fill ph-git-merge"></i>', theory: "Triplo JOIN para auditoria financeira.", task: "Faça um JOIN ligando transacoes, contas e clientes. Selecione clientes.nome e transacoes.valor.", startCode: "SELECT clientes.nome, transacoes.valor\nFROM transacoes\nJOIN contas ON transacoes.conta_id = contas.id\nJOIN clientes ON ;", solution: "SELECT clientes.nome, transacoes.valor\nFROM transacoes\nJOIN contas ON transacoes.conta_id = contas.id\nJOIN clientes ON contas.cliente_id = clientes.id;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length >= 4 },
+            { id: 11, moduleId: 4, title: "12. Rastreio de Transação", icon: '<i class="ph-fill ph-git-merge"></i>', theory: "Triplo JOIN para auditoria financeira.", task: "Faça um JOIN ligando transacoes, contas e clientes. Selecione clientes.nome e transacoes.valor.", startCode: "SELECT \n    clientes.nome, \n    transacoes.valor\nFROM transacoes\nJOIN contas ON transacoes.conta_id = contas.id\nJOIN clientes ON ;", solution: "SELECT \n    c.nome, \n    t.valor\nFROM transacoes t\nJOIN contas o ON t.conta_id = o.id\nJOIN clientes c ON o.cliente_id = c.id;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].values.length >= 4 },
             { id: 12, moduleId: 5, title: "13. Nova Conta", icon: '<i class="ph-fill ph-user-plus"></i>', theory: "Criando registros com <code>INSERT INTO</code>.", task: "Insira um novo cliente na tabela clientes: nome 'Ana Maria', cpf '44444444444', tipo 'PF'.", startCode: "INSERT INTO clientes (nome, cpf, tipo_conta)\nVALUES ('', '', '');\n\nSELECT * FROM clientes;", solution: "INSERT INTO clientes (nome, cpf, tipo_conta)\nVALUES ('Ana Maria', '44444444444', 'PF');\n\nSELECT * FROM clientes;", validator: (res) => res && res[0] && res[0].values.some(row => row[1] === 'Ana Maria') },
             { id: 13, moduleId: 5, title: "14. Aumento de Limite", icon: '<i class="ph-fill ph-arrow-fat-up"></i>', theory: "O gerente autorizou! Usamos <code>UPDATE</code>.", task: "Atualize o <code>limite_credito</code> da conta de id=2 para 15000.", startCode: "UPDATE contas\nSET limite_credito = \nWHERE id = ;\n\nSELECT * FROM contas WHERE id = 2;", solution: "UPDATE contas\nSET limite_credito = 15000\nWHERE id = 2;\n\nSELECT * FROM contas WHERE id = 2;", validator: (res) => res && res[0] && res[0].values.some(row => row[0] === 2 && row[3] === 15000) },
             { id: 14, moduleId: 5, title: "15. Estorno (Apagar)", icon: '<i class="ph-fill ph-trash"></i>', theory: "Transação indevida? Remova com <code>DELETE</code>.", task: "Delete a transação cujo id é 4.", startCode: "DELETE FROM transacoes\nWHERE id = ;\n\nSELECT * FROM transacoes;", solution: "DELETE FROM transacoes\nWHERE id = 4;\n\nSELECT * FROM transacoes;", validator: (res) => res && res[0] && !res[0].values.some(row => row[0] === 4) },
             { id: 15, moduleId: 6, title: "16. Clientes com Saldo Alto", icon: '<i class="ph-fill ph-money"></i>', theory: "Subqueries no WHERE para filtrar por métricas agregadas.", task: "Selecione clientes cujo <code>id</code> esteja na lista de contas com saldo > 10000.", startCode: "SELECT * FROM clientes \nWHERE id IN (SELECT ...);", solution: "SELECT * FROM clientes WHERE id IN (SELECT cliente_id FROM contas WHERE saldo > 10000);", validator: (res) => res && res[0] && res[0].values.length === 1 },
-            { id: 16, moduleId: 7, title: "17. Saldo Acumulado", icon: '<i class="ph-fill ph-chart-line-up"></i>', theory: "Window functions como <code>SUM() OVER</code> criam totais móveis.", task: "Calcule o saldo acumulado das contas ordenadas por id.", startCode: "SELECT id, saldo, \nSUM(saldo) OVER(ORDER BY id) as acumulado \nFROM contas;", solution: "SELECT id, saldo, SUM(saldo) OVER(ORDER BY id) as acumulado FROM contas;", validator: (res) => res && res[0] && res[0].columns.includes('acumulado') },
-            { id: 17, moduleId: 8, title: "18. Status de Crédito", icon: '<i class="ph-fill ph-shield-check"></i>', theory: "Classifique o risco com <code>CASE WHEN</code>.", task: "Se limite > 20000 então 'VIP', senão 'Standard'.", startCode: "SELECT id, \nCASE WHEN limite_credito > 20000 THEN 'VIP' \nELSE 'Standard' END as status_vip \nFROM contas;", solution: "SELECT id, CASE WHEN limite_credito > 20000 THEN 'VIP' ELSE 'Standard' END as status_vip FROM contas;", validator: (res) => res && res[0] && res[0].columns.includes('status_vip') },
+            { id: 16, moduleId: 7, title: "17. Saldo Acumulado", icon: '<i class="ph-fill ph-chart-line-up"></i>', theory: "Window functions como <code>SUM() OVER</code> criam totais móveis.", task: "Calcule o saldo acumulado das contas ordenadas por id.", startCode: "SELECT \n    id, \n    saldo, \n    SUM(saldo) OVER(ORDER BY id) as acumulado \nFROM contas;", solution: "SELECT \n    id, \n    saldo, \n    SUM(saldo) OVER(ORDER BY id) AS acumulado \nFROM contas;", validator: (res) => res && res[0] && res[0].columns.includes('acumulado') },
+            { id: 17, moduleId: 8, title: "18. Status de Crédito", icon: '<i class="ph-fill ph-shield-check"></i>', theory: "Classifique o risk com <code>CASE WHEN</code>.", task: "Se limite > 20000 então 'VIP', senão 'Standard'.", startCode: "SELECT \n    id, \n    CASE \n        WHEN limite_credito > 20000 THEN 'VIP' \n        ELSE 'Standard' \n    END AS status_vip \nFROM contas;", solution: "SELECT \n    id, \n    CASE \n        WHEN limite_credito > 20000 THEN 'VIP' \n        ELSE 'Standard' \n    END AS status_vip \nFROM contas;", validator: (res) => res && res[0] && res[0].columns.includes('status_vip') },
             { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> converte para MAIÚSCULAS, <b>LOWER()</b> para minúsculas.", task: "Selecione o <code>nome</code> dos clientes em MAIÚSCULAS e o <code>tipo_conta</code> em minúsculas.", startCode: "SELECT UPPER(nome), LOWER(tipo_conta) \nFROM clientes;", solution: "SELECT UPPER(nome), LOWER(tipo_conta) FROM clientes;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
             { id: 19, moduleId: 9, title: "20. SUBSTR / LENGTH", icon: '<i class="ph-fill ph-scissors"></i>', theory: "<b>SUBSTR(texto, inicio, qtd)</b> extrai fragmento do texto. <b>LENGTH()</b> conta caracteres.", task: "Selecione os 3 primeiros caracteres do <code>tipo</code> como 'sigla' e o comprimento como 'tamanho' das transacoes.", startCode: "SELECT SUBSTR(tipo, 1, 3) as sigla, LENGTH(tipo) as tamanho \nFROM transacoes;", solution: "SELECT SUBSTR(tipo, 1, 3) as sigla, LENGTH(tipo) as tamanho FROM transacoes;", validator: (res) => res && res[0] && res[0].columns.includes('sigla') },
             { id: 20, moduleId: 9, title: "21. REPLACE / CONCAT", icon: '<i class="ph-fill ph-arrows-left-right"></i>', theory: "<b>REPLACE(campo,'de','para')</b> substitui texto. O operador <b>||</b> concatena strings (equivale ao CONCAT do SQL Server).", task: "Crie 'descricao' juntando <code>nome</code> + ' - ' + <code>cpf</code> com <code>||</code>.", startCode: "SELECT nome || ' - ' || cpf as descricao \nFROM clientes;", solution: "SELECT nome || ' - ' || cpf as descricao FROM clientes;", validator: (res) => res && res[0] && res[0].columns.includes('descricao') },
-            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>STRFTIME('%Y-%m-%d', campo)</b> formata datas. <b>julianday()</b> calcula diferença entre datas (equivale ao DATEDIFF).", task: "Nas transacoes, mostre o <code>id</code>, o ano com <code>STRFTIME('%Y', data_hora)</code> como 'ano', e os dias decorridos com <code>CAST(julianday('now') - julianday(data_hora) AS INTEGER)</code> como 'dias_atras'.", startCode: "SELECT id, \n  STRFTIME('%Y', data_hora) as ano,\n  CAST(julianday('now') - julianday(data_hora) AS INTEGER) as dias_atras\nFROM transacoes;", solution: "SELECT id, STRFTIME('%Y', data_hora) as ano, CAST(julianday('now') - julianday(data_hora) AS INTEGER) as dias_atras FROM transacoes;", validator: (res) => res && res[0] && res[0].columns.includes('ano') },
-            { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-gauge"></i>', theory: "Índices em chaves estrangeiras aceleram os JOINs.", task: "Crie um índice chamado <code>idx_conta_trans</code> na coluna <code>conta_id</code> da tabela transacoes.", startCode: "CREATE INDEX ... ON ...(...);", solution: "CREATE INDEX idx_conta_trans ON transacoes(conta_id);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('transacoes')"); return check[0].values.some(v => v[1] === 'idx_conta_trans'); } catch(e) { return false; } } }
+            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>STRFTIME('%Y-%m-%d', campo)</b> formata datas. <b>julianday()</b> calcula diferença entre datas (equivale ao DATEDIFF).", task: "Nas transacoes, mostre o <code>id</code>, o ano com <code>STRFTIME('%Y', data_hora)</code> como 'ano', e os dias decorridos com <code>CAST(julianday('now') - julianday(data_hora) AS INTEGER)</code> como 'dias_atras'.", startCode: "SELECT \n    id, \n    STRFTIME('%Y', data_hora) as ano,\n    CAST(julianday('now') - julianday(data_hora) AS INTEGER) as dias_atras\nFROM transacoes;", solution: "SELECT \n    id, \n    STRFTIME('%Y', data_hora) AS ano, \n    CAST(julianday('now') - julianday(data_hora) AS INTEGER) AS dias_atras \nFROM transacoes;", validator: (res) => res && res[0] && res[0].columns.includes('ano') },
+            { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-gauge"></i>', theory: "Índices em chaves estrangeiras aceleram os JOINs. Use <code>CREATE INDEX IF NOT EXISTS</code> para garantir que o código não falhe caso o índice já tenha sido criado anteriormente.", task: "Crie um índice chamado <code>idx_conta_trans</code> na coluna <code>conta_id</code> da tabela transacoes (use IF NOT EXISTS).", startCode: "CREATE INDEX IF NOT EXISTS ... ON ...(...);", solution: "CREATE INDEX IF NOT EXISTS idx_conta_trans ON transacoes(conta_id);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('transacoes')"); return check[0].values.some(v => v[1] === 'idx_conta_trans'); } catch(e) { return false; } } }
         ]
     },
     farma: {
@@ -170,7 +170,7 @@ const themes = {
         `,
         lessons: [
             { id: 0, moduleId: 1, title: "1. Estoque Total", icon: '<i class="ph-fill ph-package"></i>', theory: "No centro de distribuição, o primeiro passo é ver os <code>produtos</code>.", task: "Escreva uma query para listar TODOS os dados (*) de todos os <code>produtos</code>.", startCode: "SELECT \n\nFROM produtos;", solution: "SELECT * \nFROM produtos;", validator: (res) => res && res[0] && res[0].columns.includes('estoque') && res[0].values.length >= 4 },
-            { id: 1, moduleId: 1, title: "2. Tabela de Preços", icon: '<i class="ph-fill ph-tag"></i>', theory: "As farmácias clientes precisam apenas do nome e do preço.", task: "Selecione apenas as colunas <code>nome</code> e <code>preco</code> da tabela <code>produtos</code>.", startCode: "SELECT \n    \nFROM produtos;", solution: "SELECT nome, preco \nFROM produtos;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].columns.includes('preco') },
+            { id: 1, moduleId: 1, title: "2. Tabela de Preços (AS)", icon: '<i class="ph-fill ph-tag"></i>', theory: "As farmácias clientes precisam apenas do nome e do preço. Use <code>AS</code> para deixar o cabeçalho do preço mais formal como 'Valor_Unitario'.", task: "Selecione <code>nome</code> e <code>preco</code> da tabela <code>produtos</code>. Use <code>AS</code> para renomear <code>preco</code> para 'Valor_Unitario'.", startCode: "SELECT \n    \nFROM produtos;", solution: "SELECT nome, preco AS Valor_Unitario \nFROM produtos;", validator: (res) => res && res[0] && res[0].columns.length === 2 && res[0].columns.includes('Valor_Unitario') },
             { id: 2, moduleId: 1, title: "3. Tipos de Remédios", icon: '<i class="ph-fill ph-first-aid"></i>', theory: "Quais classificações oferecemos? Usamos <code>DISTINCT</code>.", task: "Descubra quais são as diferentes categorias. Selecione valores ÚNICOS da coluna <code>categoria</code> na tabela <code>produtos</code>.", startCode: "SELECT DISTINCT \nFROM produtos;", solution: "SELECT DISTINCT categoria \nFROM produtos;", validator: (res) => res && res[0] && res[0].columns.length === 1 && res[0].values.length === 3 },
             { id: 3, moduleId: 2, title: "4. Produtos Zerados", icon: '<i class="ph-fill ph-warning"></i>', theory: "Precisamos repor o estoque! O <code>WHERE</code> acha o que acabou.", task: "Selecione todos os <code>produtos</code> onde o <code>estoque</code> seja igual a 0.", startCode: "SELECT * \nFROM produtos\nWHERE ;", solution: "SELECT * \nFROM produtos\nWHERE estoque = 0;", validator: (res) => res && res[0] && res[0].values.every(row => row[5] === 0) },
             { id: 4, moduleId: 2, title: "5. Analgésicos Baratos", icon: '<i class="ph-fill ph-intersect"></i>', theory: "Combine filtros com <code>AND</code> para campanhas promocionais.", task: "Busque produtos onde a <code>categoria</code> seja 'Analgésico' E o <code>preco</code> seja menor ou igual a 15.", startCode: "SELECT * \nFROM produtos\nWHERE \nAND ;", solution: "SELECT * \nFROM produtos\nWHERE categoria = 'Analgésico' \nAND preco <= 15;", validator: (res) => res && res[0] && res[0].values.every(row => row[3] === 'Analgésico' && row[4] <= 15) },
@@ -191,7 +191,7 @@ const themes = {
             { id: 19, moduleId: 9, title: "20. SUBSTR / LENGTH", icon: '<i class="ph-fill ph-scissors"></i>', theory: "<b>SUBSTR(texto, inicio, qtd)</b> extrai fragmento. <b>LENGTH()</b> conta caracteres.", task: "Selecione os 5 primeiros caracteres do <code>nome</code> como 'sigla' e o comprimento como 'tamanho' dos produtos.", startCode: "SELECT SUBSTR(nome, 1, 5) as sigla, LENGTH(nome) as tamanho \nFROM produtos;", solution: "SELECT SUBSTR(nome, 1, 5) as sigla, LENGTH(nome) as tamanho FROM produtos;", validator: (res) => res && res[0] && res[0].columns.includes('sigla') },
             { id: 20, moduleId: 9, title: "21. REPLACE / CONCAT", icon: '<i class="ph-fill ph-arrows-left-right"></i>', theory: "<b>REPLACE(campo,'de','para')</b> substitui texto. <b>||</b> concatena strings.", task: "Crie 'rotulo' juntando <code>nome</code> + ' (' + <code>categoria</code> + ')' usando <code>||</code>.", startCode: "SELECT nome || ' (' || categoria || ')' as rotulo \nFROM produtos;", solution: "SELECT nome || ' (' || categoria || ')' as rotulo FROM produtos;", validator: (res) => res && res[0] && res[0].columns.includes('rotulo') },
             { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>STRFTIME('%Y', data)</b> extrai o ano. <b>julianday()</b> calcula diferença em dias (DATEDIFF).", task: "Nas vendas, mostre o <code>id</code>, o mês com <code>STRFTIME('%m', data_venda)</code> como 'mes' e os dias decorridos desde a venda como 'dias_atras'.", startCode: "SELECT id, \n  STRFTIME('%m', data_venda) as mes,\n  CAST(julianday('now') - julianday(data_venda) AS INTEGER) as dias_atras\nFROM vendas;", solution: "SELECT id, STRFTIME('%m', data_venda) as mes, CAST(julianday('now') - julianday(data_venda) AS INTEGER) as dias_atras FROM vendas;", validator: (res) => res && res[0] && res[0].columns.includes('mes') },
-            { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-speedometer"></i>', theory: "Acelere a busca por categorias.", task: "Crie um índice chamado <code>idx_cat</code> na coluna <code>categoria</code> da tabela produtos.", startCode: "CREATE INDEX ... ON ...(...);", solution: "CREATE INDEX idx_cat ON produtos(categoria);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('produtos')"); return check[0].values.some(v => v[1] === 'idx_cat'); } catch(e) { return false; } } }
+            { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-speedometer"></i>', theory: "Acelere a busca por categorias. Se o índice já existir, o banco dará erro; por isso, a boa prática é usar <code>CREATE INDEX IF NOT EXISTS</code>.", task: "Crie um índice chamado <code>idx_cat</code> na coluna <code>categoria</code> da tabela produtos (use IF NOT EXISTS).", startCode: "CREATE INDEX IF NOT EXISTS ... ON ...(...);", solution: "CREATE INDEX IF NOT EXISTS idx_cat ON produtos(categoria);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('produtos')"); return check[0].values.some(v => v[1] === 'idx_cat'); } catch(e) { return false; } } }
         ]
     },
     saude: {
@@ -232,7 +232,7 @@ const themes = {
             { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> converte para MAIÚSCULAS, <b>LOWER()</b> para minúsculas.", task: "Selecione o <code>nome</code> dos beneficiários em MAIÚSCULAS e o <code>plano</code> em minúsculas.", startCode: "SELECT UPPER(nome), LOWER(plano) \nFROM beneficiarios;", solution: "SELECT UPPER(nome), LOWER(plano) FROM beneficiarios;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
             { id: 19, moduleId: 9, title: "20. SUBSTR / LENGTH", icon: '<i class="ph-fill ph-scissors"></i>', theory: "<b>SUBSTR(texto, inicio, qtd)</b> extrai fragmento do texto. <b>LENGTH()</b> conta caracteres.", task: "Selecione os 4 primeiros caracteres do <code>plano</code> como 'cod_plano' e seu comprimento como 'tamanho'.", startCode: "SELECT SUBSTR(plano, 1, 4) as cod_plano, LENGTH(plano) as tamanho \nFROM beneficiarios;", solution: "SELECT SUBSTR(plano, 1, 4) as cod_plano, LENGTH(plano) as tamanho FROM beneficiarios;", validator: (res) => res && res[0] && res[0].columns.includes('cod_plano') },
             { id: 20, moduleId: 9, title: "21. REPLACE / CONCAT", icon: '<i class="ph-fill ph-arrows-left-right"></i>', theory: "<b>REPLACE(campo,'de','para')</b> substitui texto. <b>||</b> concatena (CONCAT).", task: "Crie 'ficha' juntando <code>nome</code> + ' [' + <code>plano</code> + ']' com <code>||</code>. Substitua 'Básico' por 'BASIC' no plano.", startCode: "SELECT nome || ' [' || plano || ']' as ficha,\n  REPLACE(plano, 'Básico', 'BASIC') as plano_en\nFROM beneficiarios;", solution: "SELECT nome || ' [' || plano || ']' as ficha, REPLACE(plano, 'Básico', 'BASIC') as plano_en FROM beneficiarios;", validator: (res) => res && res[0] && res[0].columns.includes('ficha') },
-            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar-blank"></i>', theory: "<b>STRFTIME('%m', data)</b> extrai o mês. <b>julianday()</b> calcula diferença em dias.", task: "Nas consultas, mostre o <code>id</code>, o mês da consulta como 'mes', e quantos dias atrás ela ocorreu como 'dias_atras'.", startCode: "SELECT id, \n  STRFTIME('%m', data) as mes,\n  CAST(julianday('now') - julianday(data) AS INTEGER) as dias_atras\nFROM consultas;", solution: "SELECT id, STRFTIME('%m', data) as mes, CAST(julianday('now') - julianday(data) AS INTEGER) as dias_atras FROM consultas;", validator: (res) => res && res[0] && res[0].columns.includes('mes') },
+            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar-blank"></i>', theory: "<b>STRFTIME('%m', data)</b> extrai o mês. <b>julianday()</b> calcula diferença em dias.", task: "Nas consultas, mostre o <code>id</code>, o mês da consulta como 'mes', e quantos dias atrás ela ocorreu como 'dias_atras'.", startCode: "SELECT \n    id, \n    STRFTIME('%m', data) as mes, \n    CAST(julianday('now') - julianday(data) AS INTEGER) as dias_atras \nFROM consultas;", solution: "SELECT \n    id, \n    STRFTIME('%m', data) AS mes, \n    CAST(julianday('now') - julianday(data) AS INTEGER) AS dias_atras \nFROM consultas;", validator: (res) => res && res[0] && res[0].columns.includes('mes') },
             { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-hard-drives"></i>', theory: "Índices compostos para consultas complexas.", task: "Crie um índice chamado <code>idx_hosp_data</code> nas colunas <code>hospital_id</code> e <code>data</code>.", startCode: "CREATE INDEX ... ON ...(...);", solution: "CREATE INDEX idx_hosp_data ON consultas(hospital_id, data);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('consultas')"); return check[0].values.some(v => v[1] === 'idx_hosp_data'); } catch(e) { return false; } } }
         ]
     },
@@ -274,7 +274,7 @@ const themes = {
             { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> para MAIÚSCULAS, <b>LOWER()</b> para minúsculas.", task: "Selecione o <code>nome</code> dos funcionários em MAIÚSCULAS e o <code>cargo</code> em minúsculas.", startCode: "SELECT UPPER(nome), LOWER(cargo) \nFROM funcionarios;", solution: "SELECT UPPER(nome), LOWER(cargo) FROM funcionarios;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
             { id: 19, moduleId: 9, title: "20. SUBSTR / LENGTH", icon: '<i class="ph-fill ph-scissors"></i>', theory: "<b>SUBSTR(texto, inicio, qtd)</b> extrai fragmento. <b>LENGTH()</b> conta caracteres.", task: "Selecione os 3 primeiros caracteres do <code>cargo</code> como 'sigla' e o comprimento total como 'tamanho'.", startCode: "SELECT SUBSTR(cargo, 1, 3) as sigla, LENGTH(cargo) as tamanho \nFROM funcionarios;", solution: "SELECT SUBSTR(cargo, 1, 3) as sigla, LENGTH(cargo) as tamanho FROM funcionarios;", validator: (res) => res && res[0] && res[0].columns.includes('sigla') },
             { id: 20, moduleId: 9, title: "21. REPLACE / CONCAT", icon: '<i class="ph-fill ph-arrows-left-right"></i>', theory: "<b>REPLACE(campo,'de','para')</b> substitui texto. <b>||</b> concatena strings.", task: "Crie 'cracha' juntando <code>nome</code> + ' | ' + <code>cargo</code>. Substitua 'Pedreiro' por 'Mason' no cargo.", startCode: "SELECT nome || ' | ' || cargo as cracha,\n  REPLACE(cargo, 'Pedreiro', 'Mason') as cargo_en\nFROM funcionarios;", solution: "SELECT nome || ' | ' || cargo as cracha, REPLACE(cargo, 'Pedreiro', 'Mason') as cargo_en FROM funcionarios;", validator: (res) => res && res[0] && res[0].columns.includes('cracha') },
-            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>DATE('now')</b> retorna a data de hoje. <b>julianday()</b> calcula diferença entre datas (DATEDIFF).", task: "Consulte obras e calcule quantos dias uma obra imaginária iniciada em 2023-01-01 já dura: use <code>CAST(julianday('now') - julianday('2023-01-01') AS INTEGER)</code> como 'dias_em_obra'.", startCode: "SELECT nome_empreendimento, \n  CAST(julianday('now') - julianday('2023-01-01') AS INTEGER) as dias_em_obra\nFROM obras;", solution: "SELECT nome_empreendimento, CAST(julianday('now') - julianday('2023-01-01') AS INTEGER) as dias_em_obra FROM obras;", validator: (res) => res && res[0] && res[0].columns.includes('dias_em_obra') },
+            { id: 21, moduleId: 9, title: "22. Funções de Data", icon: '<i class="ph-fill ph-calendar"></i>', theory: "<b>DATE('now')</b> retorna a data de hoje. <b>julianday()</b> calcula diferença entre datas (DATEDIFF).", task: "Consulte obras e calcule quantos dias uma obra imaginária iniciada em 2023-01-01 já dura: use <code>CAST(julianday('now') - julianday('2023-01-01') AS INTEGER)</code> como 'dias_em_obra'.", startCode: "SELECT \n    nome_empreendimento, \n    CAST(julianday('now') - julianday('2023-01-01') AS INTEGER) as dias_em_obra\nFROM obras;", solution: "SELECT \n    nome_empreendimento, \n    CAST(julianday('now') - julianday('2023-01-01') AS INTEGER) AS dias_em_obra \nFROM obras;", validator: (res) => res && res[0] && res[0].columns.includes('dias_em_obra') },
             { id: 22, moduleId: 10, title: "23. CREATE INDEX", icon: '<i class="ph-fill ph-rocket-launch"></i>', theory: "Acelere a busca de funcionários por obra.", task: "Crie um índice chamado <code>idx_func_obra</code> na coluna <code>obra_id</code>.", startCode: "CREATE INDEX ... ON ...(...);", solution: "CREATE INDEX idx_func_obra ON funcionarios(obra_id);", validator: (res) => { try { const check = db.exec("PRAGMA index_list('funcionarios')"); return check[0].values.some(v => v[1] === 'idx_func_obra'); } catch(e) { return false; } } }
         ]
     },
@@ -324,6 +324,12 @@ const themes = {
 
 // --- Initialization ---
 async function init() {
+    // Check for Master Reset URL param: ?reset=true
+    if (window.location.search.includes('reset=true')) {
+        localStorage.clear();
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     initEditor();
     initResizers();
     
@@ -340,6 +346,17 @@ async function init() {
         } else {
             icon.className = 'ph-fill ph-speaker-slash';
             this.classList.add('muted');
+        }
+    });
+    
+    document.getElementById('btn-reset-progress').addEventListener('click', function() {
+        if (confirm("Tem certeza que deseja apagar todo o seu progresso NESTE cenário? Esta ação não pode ser desfeita.")) {
+            localStorage.removeItem(`stockler_progress_${currentThemeId}`);
+            completedLessons = new Set();
+            updateProgress();
+            renderLessonList();
+            showFeedback("Progresso reiniciado com sucesso!", "success");
+            document.getElementById('theme-modal').classList.remove('active');
         }
     });
 
@@ -371,9 +388,13 @@ async function init() {
         this.innerHTML = allModulesCollapsed ? '<i class="ph-bold ph-arrows-out-line-vertical"></i>' : '<i class="ph-bold ph-arrows-in-line-vertical"></i>';
     });
 
-    document.getElementById('author-link').addEventListener('click', function() {
-        window.open("https://www.linkedin.com/in/gustavo-stockler/", "_blank");
-    });
+    const authorLink = document.getElementById('author-link');
+    if (authorLink) {
+        authorLink.addEventListener('click', function(e) {
+            // Se o href já estiver correto, o target="_blank" cuida disso, 
+            // mas mantemos o listener se quiser logar cliques ou customizar
+        });
+    }
 
     document.getElementById('solution-toggle').addEventListener('click', function() {
         document.getElementById('solution-accordion').classList.toggle('open');
@@ -396,29 +417,150 @@ async function init() {
 
     // Certificate Logic
     document.getElementById('btn-certificate').addEventListener('click', function() {
+        if (this.classList.contains('locked')) {
+            showFeedback("Você precisa concluir 100% das lições deste cenário para liberar o certificado!", "warning");
+            return;
+        }
         document.getElementById('certificate-modal').classList.add('active');
-        document.querySelector('.app-container').classList.add('blurred');
+        document.getElementById('cert-step-1').classList.remove('hidden');
+        document.getElementById('cert-step-2').classList.add('hidden');
+        document.getElementById('student-name-input').value = "";
+    });
+
+    // Test Shortcut: Click logo 3 times to unlock cert for testing
+    let logoClicks = 0;
+    document.querySelector('.logo').addEventListener('click', () => {
+        logoClicks++;
+        if (logoClicks >= 3) {
+            completedLessons = new Set(Array.from({length: 23}, (_, i) => i));
+            updateProgress();
+            renderLessonList();
+            showFeedback("MODO TESTE: Certificado Liberado!", "success");
+            logoClicks = 0;
+        }
     });
 
     document.getElementById('btn-close-cert').addEventListener('click', function() {
         document.getElementById('certificate-modal').classList.remove('active');
-        document.querySelector('.app-container').classList.remove('blurred');
     });
+
+    const helpBtn = document.getElementById('btn-help-tutorial');
+    if (helpBtn) {
+        helpBtn.addEventListener('click', function() {
+            document.getElementById('tutorial-modal').classList.add('active');
+        });
+    }
+
+    const closeTutorial = document.getElementById('btn-close-tutorial');
+    if (closeTutorial) {
+        closeTutorial.addEventListener('click', function() {
+            document.getElementById('tutorial-modal').classList.remove('active');
+        });
+    }
 
     document.getElementById('btn-generate-final').addEventListener('click', function() {
         const name = document.getElementById('student-name-input').value;
         if (!name.trim()) {
-            alert("Por favor, digite seu nome.");
+            alert("Por favor, digite seu nome completo.");
             return;
         }
+        
         document.getElementById('display-student-name').innerText = name.toUpperCase();
-        document.getElementById('cert-date-display').innerText = new Date().toLocaleDateString('pt-BR');
+        
+        const now = new Date();
+        document.getElementById('cert-date-display').innerText = now.toLocaleDateString('pt-BR');
+        
         document.getElementById('cert-step-1').classList.add('hidden');
         document.getElementById('cert-step-2').classList.remove('hidden');
     });
 
     document.getElementById('btn-print-cert').addEventListener('click', function() {
-        window.print();
+        const certHtml = document.getElementById('certificate-area').innerHTML;
+        const printWindow = window.open('', '_blank', 'width=1100,height=800');
+        
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Certificado - SQL Masterclass</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Dancing+Script&display=swap" rel="stylesheet">
+                    <style>
+                        * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                        html, body { 
+                            margin: 0; 
+                            padding: 0; 
+                            background: white; 
+                            font-family: 'Inter', sans-serif;
+                            width: 297mm;
+                            height: 210mm;
+                            overflow: hidden;
+                        }
+                        @page { size: A4 landscape; margin: 0; }
+                        .certificate-paper {
+                            width: 297mm;
+                            height: 210mm;
+                            padding: 0;
+                            margin: 0;
+                            position: relative;
+                            overflow: hidden;
+                            display: flex;
+                            flex-direction: column;
+                            background: white;
+                        }
+                        .cert-pattern {
+                            position: absolute;
+                            inset: 0;
+                            opacity: 0.1;
+                            background-image: linear-gradient(30deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
+                            linear-gradient(150deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
+                            linear-gradient(60deg, #2ecc71 25%, transparent 25.5%, transparent 75%, #2ecc71 75%, #2ecc71);
+                            background-size: 80px 140px;
+                        }
+                        .cert-header-accent { position: absolute; top: 0; left: 0; right: 0; height: 12px; background: linear-gradient(90deg, #2980b9, #2ecc71, #27ae60); }
+                        .cert-footer-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #27ae60, #2980b9); }
+                        .cert-content {
+                            width: 100%; height: 100%; position: relative; z-index: 2;
+                            display: flex; flex-direction: column; padding: 18mm 20mm;
+                            background: rgba(255, 255, 255, 0.92);
+                            align-items: center;
+                        }
+                        .cert-top { display: flex; flex-direction: column; align-items: center; margin-bottom: 8mm; }
+                        .brand-main { font-size: 22pt; font-weight: 900; color: #2c3e50; letter-spacing: 5pt; }
+                        .brand-sub { font-size: 8pt; font-weight: 700; color: #7f8c8d; letter-spacing: 2pt; margin-top: 4pt; }
+                        .cert-title-modern { font-size: 58pt; font-weight: 300; color: #2c3e50; margin: 6mm 0 0 0; letter-spacing: 15pt; text-transform: uppercase; }
+                        .cert-title-divider { width: 90mm; height: 1pt; background: linear-gradient(90deg, transparent, #2980b9, transparent); position: relative; margin-top: 3mm; }
+                        .cert-title-divider i { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 0 10mm; font-size: 24pt; color: #2980b9; }
+                        
+                        .cert-body-modern { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; }
+                        .cert-intro { font-size: 12pt; color: #7f8c8d; letter-spacing: 3pt; margin-bottom: 4mm; text-transform: uppercase; }
+                        .cert-name-display { font-size: 40pt; font-weight: 700; color: #2c3e50; margin: 4mm 0 6mm 0; text-transform: uppercase; }
+                        .cert-summary-text { font-size: 13pt; line-height: 1.6; max-width: 90%; color: #2d3436; margin-bottom: 8mm; }
+                        .cert-meta-info { display: flex; gap: 12mm; font-size: 11pt; color: #7f8c8d; font-weight: 600; }
+                        .cert-meta-info .divider { color: #bdc3c7; }
+                        
+                        .cert-footer-modern { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10mm; width: 100%; }
+                        .signature-img { font-family: 'Dancing Script', cursive; font-size: 24pt; color: #2c3e50; }
+                        .signature-line { width: 70mm; height: 1pt; background: #bdc3c7; margin: 3mm 0; }
+                        .sig-title { font-size: 9pt; color: #7f8c8d; }
+                        .cert-verification { font-size: 7pt; color: #bdc3c7; max-width: 60mm; text-align: right; }
+                        
+                        @import url('https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css');
+                    </style>
+                </head>
+                <body>
+                    <div class="certificate-paper">
+                        ${certHtml}
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(() => {
+                                window.print();
+                            }, 500);
+                        };
+                    </script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
     });
 
     // Theme Modal Logic
@@ -435,7 +577,6 @@ async function init() {
 
     document.getElementById('btn-close-modal').addEventListener('click', function() {
         document.getElementById('theme-modal').classList.remove('active');
-        document.querySelector('.app-container').classList.remove('blurred');
     });
 
     // Segmented Toggle for Schema
@@ -463,20 +604,19 @@ async function init() {
 
 function showThemeModal() {
     document.getElementById('theme-modal').classList.add('active');
-    document.querySelector('.app-container').classList.add('blurred');
 }
 
 function selectTheme(themeId) {
     currentThemeId = themeId;
     currentLessonId = 0;
-    completedLessons.clear();
     
     localStorage.setItem('stockler_theme', themeId);
+    loadProgress();
 
     const theme = themes[themeId];
     
     // Update Header
-    document.getElementById('app-title').innerText = theme.title;
+    document.getElementById('app-title').innerText = `Banco de Dados: ${theme.title}`;
     document.getElementById('header-logo-icon').innerHTML = theme.icon;
 
     // Update Schema Box
@@ -484,7 +624,6 @@ function selectTheme(themeId) {
 
     // Hide Modal
     document.getElementById('theme-modal').classList.remove('active');
-    document.querySelector('.app-container').classList.remove('blurred');
 
     initDBForTheme(theme);
 }
@@ -528,7 +667,7 @@ function generateObjectExplorerHTML(theme) {
             <div class="tree-children">
     `;
 
-    theme.schema.forEach(item => {
+    theme.schema.forEach((item, idx) => {
         const tableMatch = item.match(/highlight">([^<]+)<\/span>/);
         if(!tableMatch) return;
         const tableName = tableMatch[1];
@@ -537,7 +676,7 @@ function generateObjectExplorerHTML(theme) {
         const columns = colsMatch ? colsMatch.map(c => c.replace(/<\/?code>/g, '')) : [];
 
         html += `
-                <details class="tree-details" open>
+                <details class="tree-details" ${idx === 0 ? 'open' : ''}>
                     <summary class="tree-item"><i class="ph-fill ph-table tree-icon" style="color:#0078d4"></i> <span>dbo.${tableName}</span></summary>
                     <div class="tree-children">`;
         
@@ -654,7 +793,7 @@ function initResizers() {
 // SQL concept labels shown in the sidebar (position-based, same across all themes)
 const sqlLessonTitles = [
     '1. SELECT *',
-    '2. SELECT Colunas',
+    '2. SELECT + AS',
     '3. SELECT DISTINCT',
     '4. WHERE =',
     '5. WHERE AND',
@@ -686,7 +825,7 @@ function renderLessonList() {
 
     modules.forEach(mod => {
         const modGroup = document.createElement('div');
-        modGroup.className = 'module-group';
+        modGroup.className = 'module-group collapsed';
         
         const modHeader = document.createElement('div');
         modHeader.className = 'module-header';
@@ -730,8 +869,27 @@ function updateProgress() {
     document.getElementById('progress-fill').style.width = percentage + '%';
     document.getElementById('progress-text').innerText = percentage + '%';
 
-    if (completed === total) {
-        document.getElementById('btn-certificate').classList.remove('hidden');
+    const btnCert = document.getElementById('btn-certificate');
+    if (percentage >= 100) {
+        btnCert.classList.remove('locked');
+        btnCert.title = "Gerar Certificado de Conclusão";
+    } else {
+        btnCert.classList.add('locked');
+        btnCert.title = "Conclua 100% do curso para liberar";
+    }
+}
+
+function saveProgress() {
+    const data = JSON.stringify(Array.from(completedLessons));
+    localStorage.setItem(`stockler_progress_${currentThemeId}`, data);
+}
+
+function loadProgress() {
+    const data = localStorage.getItem(`stockler_progress_${currentThemeId}`);
+    if (data) {
+        completedLessons = new Set(JSON.parse(data));
+    } else {
+        completedLessons = new Set();
     }
 }
 
@@ -883,6 +1041,7 @@ function markCompleted() {
     }
     
     updateProgress();
+    saveProgress();
     renderLessonList();
 }
 

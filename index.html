@@ -19,7 +19,7 @@
         <div class="theme-modal-content">
             <button id="btn-close-modal" class="theme-modal-close" title="Fechar Janela"><i class="ph-bold ph-x"></i></button>
             <h2 class="theme-modal-title">Escolha seu Ambiente de Trabalho</h2>
-            <p class="theme-modal-subtitle">Gustavo, selecione a empresa na qual o aluno fará o treinamento hoje:</p>
+            <p class="theme-modal-subtitle">Selecione a empresa na qual o aluno fará o treinamento hoje:</p>
             
             <div class="theme-cards-container">
                 <!-- Theme 1: Veiculos -->
@@ -70,6 +70,45 @@
                     <span class="theme-badge">Tabelas: produtos, vendedores, vendas</span>
                 </div>
             </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-light); text-align: center;">
+                <button id="btn-reset-progress" class="btn-outline-sm" style="color: var(--error); border-color: rgba(220, 53, 69, 0.3); font-size: 11px;">
+                    <i class="ph-bold ph-trash"></i> Reiniciar Progresso do Cenário Selecionado
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="theme-modal-overlay">
+        <div class="theme-modal-content" style="max-width: 500px;">
+            <button id="btn-close-tutorial" class="theme-modal-close" title="Fechar"><i class="ph-bold ph-x"></i></button>
+            <h2 class="theme-modal-title"><i class="ph-fill ph-info"></i> Como Utilizar o Sistema</h2>
+            <div class="tutorial-content" style="text-align: left; margin-top: 20px; line-height: 1.6; color: var(--text-light-secondary);">
+                <p style="margin-bottom: 15px;">Bem-vindo ao seu ambiente de treinamento SQL! Siga os passos abaixo para dominar o banco de dados:</p>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 24px; color: var(--brand-primary);"><i class="ph-bold ph-number-square-one"></i></div>
+                    <div><strong>Coluna Esquerda (Módulos):</strong> Escolha as lições em ordem cronológica. Use a barra de progresso para acompanhar sua evolução.</div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 24px; color: var(--brand-primary);"><i class="ph-bold ph-number-square-two"></i></div>
+                    <div><strong>Coluna Central (Teoria):</strong> Leia atentamente a explicação técnica e o desafio proposto. Observe o "Pesquisador de Objetos" para entender a estrutura das tabelas.</div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div style="font-size: 24px; color: var(--brand-primary);"><i class="ph-bold ph-number-square-three"></i></div>
+                    <div><strong>Coluna Direita (Editor):</strong> Digite seu código SQL no editor e clique em <b>"Executar Código"</b>. O resultado aparecerá na aba abaixo (Resultado).</div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div style="font-size: 24px; color: var(--brand-primary);"><i class="ph-bold ph-number-square-four"></i></div>
+                    <div><strong>Dúvidas?</strong> Caso tenha dúvidas, clique em <b>"Solução"</b> ao final da teoria, use o botão <b>"Copiar para o Editor"</b> e depois clique em <b>"Executar Código"</b>.</div>
+                </div>
+                <p style="background: var(--bg-light-blue); padding: 12px; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--brand-primary);">
+                    🎯 <b>Dica:</b> Ao concluir 100% dos desafios de um cenário, seu <b>Certificado</b> será liberado automaticamente no botão dourado no topo!
+                </p>
+            </div>
+            <div style="margin-top: 25px; text-align: center;">
+                <button class="btn-run" style="width: 100%;" onclick="document.getElementById('tutorial-modal').classList.remove('active')">Entendi, vamos começar!</button>
+            </div>
         </div>
     </div>
 
@@ -78,20 +117,28 @@
         <header class="app-header">
             <div class="logo">
                 <div class="logo-icon" id="header-logo-icon"><i class="ph-fill ph-database"></i></div>
-                <h1 id="app-title">SQL Masterclass</h1>
+                <h1 id="app-title">Banco de Dados: Carregando...</h1>
+                <span class="logo-divider">|</span>
+                <button id="btn-change-theme" class="btn-outline-sm header-theme-btn" title="Trocar de Empresa">
+                    <i class="ph-bold ph-swap"></i> Trocar Cenário
+                </button>
+                <span class="logo-divider">|</span>
+                <div class="header-help">
+                    <span>Dúvidas sobre o funcionamento?</span>
+                    <button id="btn-help-tutorial" class="btn-help-icon" title="Como funciona?">
+                        <i class="ph-bold ph-question"></i>
+                    </button>
+                </div>
             </div>
             <div class="header-actions">
-                <button id="btn-certificate" class="btn-certificate hidden" title="Gerar Certificado de Conclusão">
+                <button id="btn-certificate" class="btn-certificate locked" title="Conclua o curso para liberar o certificado">
                     <i class="ph-fill ph-certificate"></i> Certificado
-                </button>
-                <button id="btn-change-theme" class="btn-outline-sm" title="Trocar de Empresa">
-                    <i class="ph-bold ph-swap"></i> Trocar Cenário
                 </button>
                 <button id="audio-toggle" class="btn-icon" title="Mutar/Desmutar Som">
                     <i class="ph-fill ph-speaker-high" id="audio-icon"></i>
                 </button>
                 <div class="author">
-                    <span>Criado por <strong class="author-name" id="author-link">Gustavo Stockler</strong></span>
+                    <span>Criado por <a href="https://www.linkedin.com/in/gustavo-stockler/" target="_blank" class="author-name" id="author-link" style="color: var(--brand-primary); font-weight: 700;">Gustavo Stockler</a></span>
                 </div>
             </div>
         </header>
@@ -102,45 +149,60 @@
                 <button id="btn-close-cert" class="theme-modal-close"><i class="ph-bold ph-x"></i></button>
                 <div class="cert-input-step" id="cert-step-1">
                     <h2 class="theme-modal-title">Parabéns, Especialista!</h2>
-                    <p class="theme-modal-subtitle">Você concluiu todos os 10 módulos do treinamento. Como devemos escrever seu nome no certificado?</p>
+                    <p class="theme-modal-subtitle">Você concluiu todos os módulos do treinamento. Como devemos escrever seu nome no certificado?</p>
                     <input type="text" id="student-name-input" placeholder="Seu Nome Completo" class="cert-input">
                     <button id="btn-generate-final" class="btn-run" style="width: 100%; margin-top: 20px;">Gerar Certificado PDF</button>
                 </div>
-                
+
                 <div class="cert-viewer hidden" id="cert-step-2">
-                    <div id="certificate-area" class="certificate-paper">
-                        <div class="cert-border">
+                    <div id="certificate-area">
+                        <div class="certificate-paper">
+                            <div class="cert-pattern"></div>
+                            <div class="cert-header-accent"></div>
+                            
                             <div class="cert-content">
-                                <div class="cert-logo">
-                                    <i class="ph-fill ph-database"></i>
-                                    <span>STOCKLER SQL MASTERCLASS</span>
+                                <div class="cert-top">
+                                    <div class="cert-brand">
+                                        <span class="brand-main">SQL MASTERCLASS</span>
+                                        <span class="brand-sub">TREINAMENTOS PROFISSIONAIS</span>
+                                    </div>
+                                    <h1 class="cert-title-modern">CERTIFICADO</h1>
+                                    <div class="cert-title-divider">
+                                        <i class="ph-fill ph-seal-check"></i>
+                                    </div>
                                 </div>
-                                <h1 class="cert-title">CERTIFICADO</h1>
-                                <p class="cert-subtitle">Certificamos que</p>
-                                <h2 class="cert-student-name" id="display-student-name">NOME DO ALUNO</h2>
-                                <p class="cert-text">concluiu com êxito o treinamento avançado de SQL, abrangendo desde fundamentos básicos até subqueries, funções de janela e otimização de performance, totalizando 10 módulos de prática intensiva.</p>
-                                
-                                <div class="cert-footer">
-                                    <div class="cert-signature">
-                                        <div class="sig-line"></div>
-                                        <span>GUSTAVO STOCKLER</span>
-                                        <small>Instrutor & Fundador</small>
+
+                                <div class="cert-body-modern">
+                                    <p class="cert-intro">CERTIFICAMOS QUE</p>
+                                    <h2 id="display-student-name" class="cert-name-display">NOME DO ALUNO</h2>
+                                    <p class="cert-summary-text">
+                                        concluiu com êxito o treinamento de <strong>SQL na Prática: Treinamento Interativo Online</strong>, dominando comandos essenciais como SELECT, WHERE, filtros avançados, agrupamentos com GROUP BY, cruzamento de tabelas com JOIN, além de Subqueries e Window Functions através de prática intensiva em cenários reais de negócio.
+                                    </p>
+                                    <div class="cert-meta-info">
+                                        <span>Data de Emissão: <span id="cert-date-display">02/05/2026</span></span>
                                     </div>
-                                    <div class="cert-date">
-                                        <span id="cert-date-display">02/05/2024</span>
-                                        <small>Data de Emissão</small>
+                                </div>
+
+                                <div class="cert-footer-modern">
+                                    <div class="cert-signature-area">
+                                        <div class="signature-img">Stockler Treinamentos</div>
+                                        <div class="signature-line"></div>
+                                        <span class="sig-title">Organização Emissora</span>
                                     </div>
-                                    <div class="cert-qr">
-                                        <i class="ph-bold ph-qr-code"></i>
-                                        <small>Validar Autenticidade</small>
+                                    <div class="cert-verification">
+                                        <span>Verificado em: sqlmasterclass.pro/verify/987a-654b-321c</span>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="cert-footer-accent"></div>
                         </div>
                     </div>
-                    <button id="btn-print-cert" class="btn-outline" style="width: 100%; margin-top: 20px;">
-                        <i class="ph-bold ph-printer"></i> Imprimir ou Salvar PDF
-                    </button>
+                    <div class="cert-actions">
+                        <button id="btn-print-cert" class="btn-primary-cert">
+                            <i class="ph-bold ph-printer"></i> Imprimir ou Salvar PDF
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -169,10 +231,18 @@
                     <div class="progress-track">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
+                    <div class="cert-info-badge">
+                        <i class="ph-fill ph-trophy"></i>
+                        <span>Conclua 100% para o Certificado</span>
+                    </div>
                 </div>
 
                 <div id="lesson-list" class="lesson-list">
                     <!-- Modules and Lessons injected here via JS -->
+                </div>
+
+                <div class="sidebar-footer">
+                    <span><strong>Stockler Treinamentos</strong></span>
                 </div>
             </aside>
 
@@ -183,14 +253,16 @@
             <section class="content-center" id="panel-center">
                 <div class="content-scroll-area">
                     <div class="lesson-header">
-                        <div class="lesson-icon" id="lesson-icon">
-                            <i class="ph-fill ph-book-open"></i>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="lesson-icon" id="lesson-icon">
+                                <i class="ph-fill ph-book-open"></i>
+                            </div>
+                            <h2 id="lesson-title">Carregando...</h2>
                         </div>
-                        <h2 id="lesson-title">Carregando...</h2>
                     </div>
 
                     <div class="task-header">
-                        <i class="ph-fill ph-lightbulb"></i> Desafio
+                        <i class="ph-fill ph-graduation-cap"></i> Teoria
                         <span class="task-badge" id="module-badge">Prática</span>
                     </div>
 
@@ -251,7 +323,9 @@
                 <!-- Editor Top Half -->
                 <div class="editor-section">
                     <div class="panel-header">
-                        <div class="panel-tab active">SQL</div>
+                        <div class="panel-tab active">
+                            <i class="ph ph-code"></i> SQL Editor
+                        </div>
                     </div>
                     <div class="editor-wrapper">
                         <textarea id="sql-editor"></textarea>
@@ -277,7 +351,7 @@
                 <div class="terminal-section">
                     <div class="panel-header terminal-header">
                         <div style="display:flex; gap: 16px;">
-                            <div class="panel-tab active" style="font-size: 11px; text-transform: uppercase;">Console</div>
+                            <div class="panel-tab active" style="font-size: 11px; text-transform: uppercase;">Resultado</div>
                         </div>
                         <div id="feedback-message" class="feedback-badge hidden"></div>
                     </div>
