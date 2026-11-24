@@ -90,18 +90,17 @@
             <button id="btn-close-tutorial" class="theme-modal-close" title="Fechar"><i class="ph-bold ph-x"></i></button>
             <h2 class="theme-modal-title">Como funciona</h2>
             <div class="tutorial-content">
-                <p>Cada lição tem uma explicação curta e um desafio. Você escreve a consulta, executa e o sistema confere o resultado.</p>
                 <ol class="tutorial-steps">
-                    <li><strong>Módulos (à esquerda).</strong> São 15 módulos, do básico ao avançado. O anel em volta do número de cada módulo enche conforme você conclui as lições.</li>
-                    <li><strong>Lição (ao centro).</strong> Leia a explicação, o desafio e consulte as tabelas disponíveis no pesquisador de objetos.</li>
-                    <li><strong>Editor (à direita).</strong> Escreva o SQL e clique em <b>Executar código</b> (ou <kbd>Ctrl</kbd> + <kbd>Enter</kbd>). O resultado aparece logo abaixo.</li>
-                    <li><strong>Travou?</strong> Abra <b>Solução</b>, copie para o editor e execute. Se os dados ficarem bagunçados, use <b>Restaurar banco</b>.</li>
+                    <li><span>Escolha uma lição em <b>Módulos</b>, à esquerda.</span></li>
+                    <li><span>Leia a explicação e o <b>desafio</b>.</span></li>
+                    <li><span>Escreva o SQL e clique em <b>Executar código</b>.</span></li>
                 </ol>
-                <p class="tutorial-tip">O botão <b>Certificado</b>, no topo, gera o certificado a qualquer momento. Antes de concluir o curso, ele registra as horas parciais que você já cumpriu.</p>
+                <p class="tutorial-tip">Travou? Abra <b>Ver solução</b>. O <b>Certificado</b>, no topo, pode ser gerado a qualquer momento.</p>
             </div>
             <div class="tutorial-actions">
                 <button class="btn-run" style="width: 100%;" onclick="document.getElementById('tutorial-modal').classList.remove('active')">Começar</button>
             </div>
+            <p class="privacy-note">Contamos visitas de forma anônima, sem cookies. <a href="https://sqlstockler.goatcounter.com" target="_blank" rel="noopener">Ver estatísticas</a></p>
         </div>
     </div>
 
@@ -323,6 +322,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/sql/sql.min.js"></script>
+    <!-- Estatísticas anônimas, sem cookies: https://sqlstockler.goatcounter.com -->
+    <script data-goatcounter="https://sqlstockler.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
     <script src="licoes-extras.js"></script>
     <script src="script.js"></script>
 </body>

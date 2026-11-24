@@ -327,6 +327,16 @@ const themes = {
     }
 };
 
+// --- Estatísticas anônimas (GoatCounter: sem cookies, sem guardar IP) ---
+// Nenhum dado pessoal é enviado: só o nome do evento.
+function trackEvent(path, title) {
+    try {
+        if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+            window.goatcounter.count({ path: path, title: title, event: true });
+        }
+    } catch (e) { /* estatística nunca deve atrapalhar o curso */ }
+}
+
 // --- Ajudantes de validação ---
 // Compara o último resultado do aluno com o resultado de uma query de referência.
 // ordered: true exige a mesma ordem de linhas. Nomes de colunas são ignorados,
@@ -450,9 +460,8 @@ async function init() {
 
     const authorLink = document.getElementById('author-link');
     if (authorLink) {
-        authorLink.addEventListener('click', function(e) {
-            // Se o href já estiver correto, o target="_blank" cuida disso, 
-            // mas mantemos o listener se quiser logar cliques ou customizar
+        authorLink.addEventListener('click', function() {
+            trackEvent('clique-linkedin', 'Clique no LinkedIn do autor');
         });
     }
 
@@ -524,6 +533,8 @@ async function init() {
         document.getElementById('cert-step-1').classList.add('hidden');
         document.getElementById('cert-step-2').classList.remove('hidden');
         renderCertificatePreview(name);
+        const complete = getCourseStats().complete;
+        trackEvent(complete ? 'certificado-conclusao' : 'certificado-parcial', complete ? 'Certificado de conclusão gerado' : 'Certificado parcial gerado');
     });
 
     document.getElementById('student-name-input').addEventListener('keydown', function(e) {
@@ -542,10 +553,11 @@ async function init() {
     document.querySelectorAll('.theme-card').forEach(card => {
         card.addEventListener('click', function() {
             const themeId = this.getAttribute('data-theme');
+            trackEvent(`cenario-${themeId}`, `Cenário escolhido: ${themes[themeId].title}`);
             selectTheme(themeId);
         });
         card.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTheme(this.getAttribute('data-theme')); }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
         });
     });
 
@@ -1048,11 +1060,20 @@ function renderError(errorMsg) {
 
 function markCompleted() {
     const doneLesson = themes[currentThemeId].lessons[currentLessonId];
-    if(!completedLessons.has(doneLesson.id)) {
+    const firstTime = !completedLessons.has(doneLesson.id);
+    if (firstTime) {
         playWinnerSound();
     }
-    
+
     completedLessons.add(doneLesson.id);
+    if (firstTime) {
+        const m = String(doneLesson.moduleId).padStart(2, '0');
+        trackEvent(`licao-concluida-modulo-${m}`, `Lição concluída no módulo ${doneLesson.moduleId}`);
+        const lessons = themes[currentThemeId].lessons;
+        if (lessons.every(l => completedLessons.has(l.id))) {
+            trackEvent('curso-concluido', 'Curso concluído (todas as lições)');
+        }
+    }
     showFeedback("Desafio concluído!", "success");
     
     const statusInd = document.getElementById('lesson-status');

@@ -387,13 +387,16 @@ kbd {
 
 .tutorial-steps li {
     counter-increment: passo;
-    display: grid;
-    grid-template-columns: 28px 1fr;
+    display: flex;
+    align-items: center;
     gap: 12px;
 }
 
+.tutorial-steps li > span { flex: 1; min-width: 0; }
+
 .tutorial-steps li::before {
     content: counter(passo);
+    flex-shrink: 0;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -405,7 +408,7 @@ kbd {
     place-items: center;
 }
 
-.tutorial-steps strong { color: var(--text); }
+.tutorial-steps b, .tutorial-tip b { color: var(--text); font-weight: 600; }
 
 .tutorial-tip {
     background: var(--paper);
@@ -415,6 +418,16 @@ kbd {
 }
 
 .tutorial-actions { margin-top: 24px; }
+
+.privacy-note {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-3);
+    text-align: center;
+}
+
+.privacy-note a { color: var(--text-3); text-decoration: underline; text-underline-offset: 2px; }
+.privacy-note a:hover { color: var(--accent); }
 
 /* ---------- Corpo em 3 colunas ---------- */
 .app-body {
