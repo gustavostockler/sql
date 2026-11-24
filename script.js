@@ -60,7 +60,12 @@ const modules = [
     { id: 7, title: "Módulo 7: Window Functions" },
     { id: 8, title: "Módulo 8: CASE WHEN & Lógica" },
     { id: 9, title: "Módulo 9: Funções de Texto & Data" },
-    { id: 10, title: "Módulo 10: Performance & Indexes" }
+    { id: 10, title: "Módulo 10: Performance & Indexes" },
+    { id: 11, title: "Módulo 11: Agregações Avançadas" },
+    { id: 12, title: "Módulo 12: JOINs Avançados" },
+    { id: 13, title: "Módulo 13: Nulos & Conjuntos" },
+    { id: 14, title: "Módulo 14: Criando Estruturas" },
+    { id: 15, title: "Módulo 15: Desafios de Negócio" }
 ];
 
 let completedLessons = new Set();
@@ -226,7 +231,7 @@ const themes = {
             { id: 12, moduleId: 5, title: "13. Novo Cliente", icon: '<i class="ph-fill ph-user-plus"></i>', theory: "O setor comercial vendeu um plano! Use <code>INSERT INTO</code>.", task: "Insira na tabela beneficiarios: nome 'Fernanda', plano 'Premium', mensalidade 600, status 'Ativo'.", startCode: "INSERT INTO beneficiarios (nome, plano, mensalidade, status)\nVALUES ('', '', , '');\n\nSELECT * FROM beneficiarios;", solution: "INSERT INTO beneficiarios (nome, plano, mensalidade, status)\nVALUES ('Fernanda', 'Premium', 600, 'Ativo');\n\nSELECT * FROM beneficiarios;", validator: (res) => res && res[0] && res[0].values.some(row => row[1] === 'Fernanda') },
             { id: 13, moduleId: 5, title: "14. Reajuste Anual", icon: '<i class="ph-fill ph-trend-up"></i>', theory: "A inflação bateu. Atualize com <code>UPDATE</code>.", task: "Aumente a <code>mensalidade</code> do beneficiario de id=1 para 280.", startCode: "UPDATE beneficiarios\nSET mensalidade = \nWHERE id = ;\n\nSELECT * FROM beneficiarios WHERE id = 1;", solution: "UPDATE beneficiarios\nSET mensalidade = 280\nWHERE id = 1;\n\nSELECT * FROM beneficiarios WHERE id = 1;", validator: (res) => res && res[0] && res[0].values.some(row => row[0] === 1 && row[3] === 280) },
             { id: 14, moduleId: 5, title: "15. Descredenciamento", icon: '<i class="ph-fill ph-trash"></i>', theory: "Hospital rompeu contrato. Remova com <code>DELETE</code>.", task: "Delete a consulta registrada com o id 4.", startCode: "DELETE FROM consultas\nWHERE id = ;\n\nSELECT * FROM consultas;", solution: "DELETE FROM consultas\nWHERE id = 4;\n\nSELECT * FROM consultas;", validator: (res) => res && res[0] && !res[0].values.some(row => row[0] === 4) },
-            { id: 15, moduleId: 6, title: "16. Pacientes VIPs", icon: '<i class="ph-fill ph-crown"></i>', theory: "Subqueries para identificar subconjuntos de elite.", task: "Selecione beneficiários que pagam acima da média de mensalidade.", startCode: "SELECT * FROM beneficiarios \nWHERE mensalidade > (SELECT ...);", solution: "SELECT * FROM beneficiarios WHERE mensalidade > (SELECT AVG(mensalidade) FROM beneficiarios);", validator: (res) => res && res[0] && res[0].values.length === 2 },
+            { id: 15, moduleId: 6, title: "16. Pacientes VIPs", icon: '<i class="ph-fill ph-crown"></i>', theory: "Subqueries para identificar subconjuntos de elite.", task: "Selecione beneficiários que pagam acima da média de mensalidade.", startCode: "SELECT * FROM beneficiarios \nWHERE mensalidade > (SELECT ...);", solution: "SELECT * FROM beneficiarios WHERE mensalidade > (SELECT AVG(mensalidade) FROM beneficiarios);", validator: (res) => res && res[0] && res[0].values.length === db.exec("SELECT COUNT(*) FROM beneficiarios WHERE mensalidade > (SELECT AVG(mensalidade) FROM beneficiarios)")[0].values[0][0] },
             { id: 16, moduleId: 7, title: "17. Fila de Atendimento", icon: '<i class="ph-fill ph-list-numbers"></i>', theory: "Numeração sequencial por grupos (PARTITION BY).", task: "Numere as consultas por beneficiário usando <code>ROW_NUMBER()</code>.", startCode: "SELECT beneficiario_id, data, \nROW_NUMBER() OVER(PARTITION BY beneficiario_id ORDER BY data) as seq \nFROM consultas;", solution: "SELECT beneficiario_id, data, ROW_NUMBER() OVER(PARTITION BY beneficiario_id ORDER BY data) as seq FROM consultas;", validator: (res) => res && res[0] && res[0].columns.includes('seq') },
             { id: 17, moduleId: 8, title: "18. Auditoria de Status", icon: '<i class="ph-fill ph-eye"></i>', theory: "Traduza códigos técnicos para linguagem humana.", task: "Se status for 'Cancelado' chame de 'Inativo', senão 'Vigente'.", startCode: "SELECT nome, \nCASE WHEN status = 'Cancelado' THEN 'Inativo' \nELSE 'Vigente' END as situacao \nFROM beneficiarios;", solution: "SELECT nome, CASE WHEN status = 'Cancelado' THEN 'Inativo' ELSE 'Vigente' END as situacao FROM beneficiarios;", validator: (res) => res && res[0] && res[0].columns.includes('situacao') },
             { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> converte para MAIÚSCULAS, <b>LOWER()</b> para minúsculas.", task: "Selecione o <code>nome</code> dos beneficiários em MAIÚSCULAS e o <code>plano</code> em minúsculas.", startCode: "SELECT UPPER(nome), LOWER(plano) \nFROM beneficiarios;", solution: "SELECT UPPER(nome), LOWER(plano) FROM beneficiarios;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
@@ -310,7 +315,7 @@ const themes = {
             { id: 12, moduleId: 5, title: "13. Cadastro de Novo Produto", icon: '<i class="ph-fill ph-plus"></i>', theory: "Adicione novos itens ao catálogo.", task: "Insira um novo produto: nome 'Bomba de Ar', categoria 'Acessórios', cor 'Cinza', preco 45.", startCode: "INSERT INTO produtos (nome, categoria, cor, preco)\nVALUES ('', '', '', );\n\nSELECT * FROM produtos;", solution: "INSERT INTO produtos (nome, categoria, cor, preco)\nVALUES ('Bomba de Ar', 'Acessórios', 'Cinza', 45);\n\nSELECT * FROM produtos;", validator: (res) => res && res[0] && res[0].values.some(row => row[1] === 'Bomba de Ar') },
             { id: 13, moduleId: 5, title: "14. Reajuste de Meta", icon: '<i class="ph-fill ph-trend-up"></i>', theory: "Atualize as metas dos vendedores.", task: "Aumente a <code>meta_vendas</code> do vendedor de id=1 para 55000.", startCode: "UPDATE vendedores\nSET meta_vendas = \nWHERE id = ;\n\nSELECT * FROM vendedores WHERE id = 1;", solution: "UPDATE vendedores\nSET meta_vendas = 55000\nWHERE id = 1;\n\nSELECT * FROM vendedores WHERE id = 1;", validator: (res) => res && res[0] && res[0].values.some(row => row[0] === 1 && row[3] === 55000) },
             { id: 14, moduleId: 5, title: "15. Estorno de Venda", icon: '<i class="ph-fill ph-trash"></i>', theory: "Remova registros incorretos.", task: "Delete a venda cujo id é 5.", startCode: "DELETE FROM vendas\nWHERE id = ;\n\nSELECT * FROM vendas;", solution: "DELETE FROM vendas\nWHERE id = 5;\n\nSELECT * FROM vendas;", validator: (res) => res && res[0] && !res[0].values.some(row => row[0] === 5) },
-            { id: 15, moduleId: 6, title: "16. Produtos de Elite", icon: '<i class="ph-fill ph-sketch-logo"></i>', theory: "Subqueries para identificar o topo do catálogo.", task: "Selecione produtos cujo preço seja maior que a média.", startCode: "SELECT * FROM produtos \nWHERE preco > (SELECT ...);", solution: "SELECT * FROM produtos WHERE preco > (SELECT AVG(preco) FROM produtos);", validator: (res) => res && res[0] && res[0].values.length === 1 },
+            { id: 15, moduleId: 6, title: "16. Produtos de Elite", icon: '<i class="ph-fill ph-sketch-logo"></i>', theory: "Subqueries para identificar o topo do catálogo.", task: "Selecione produtos cujo preço seja maior que a média.", startCode: "SELECT * FROM produtos \nWHERE preco > (SELECT ...);", solution: "SELECT * FROM produtos WHERE preco > (SELECT AVG(preco) FROM produtos);", validator: (res) => res && res[0] && res[0].values.length === db.exec("SELECT COUNT(*) FROM produtos WHERE preco > (SELECT AVG(preco) FROM produtos)")[0].values[0][0] },
             { id: 16, moduleId: 7, title: "17. Ranking de Vendedores", icon: '<i class="ph-fill ph-trophy"></i>', theory: "Rankeie a performance com <code>RANK()</code>.", task: "Rankeie os vendedores por meta de vendas de forma decrescente.", startCode: "SELECT nome, meta_vendas, \nRANK() OVER(ORDER BY meta_vendas DESC) as rank \nFROM vendedores;", solution: "SELECT nome, meta_vendas, RANK() OVER(ORDER BY meta_vendas DESC) as rank FROM vendedores;", validator: (res) => res && res[0] && res[0].columns.includes('rank') },
             { id: 17, moduleId: 8, title: "18. Faixa de Preço", icon: '<i class="ph-fill ph-tag-chevron"></i>', theory: "Use <code>CASE WHEN</code> para criar categorias de preço.", task: "Se preço > 1000 'Premium', senão 'Comum'.", startCode: "SELECT nome, \nCASE WHEN preco > 1000 THEN 'Premium' \nELSE 'Comum' END as tipo \nFROM produtos;", solution: "SELECT nome, CASE WHEN preco > 1000 THEN 'Premium' ELSE 'Comum' END as tipo FROM produtos;", validator: (res) => res && res[0] && res[0].columns.includes('tipo') },
             { id: 18, moduleId: 9, title: "19. UPPER / LOWER", icon: '<i class="ph-fill ph-text-aa"></i>', theory: "<b>UPPER()</b> para MAIÚSCULAS, <b>LOWER()</b> para minúsculas.", task: "Selecione o <code>nome</code> dos produtos em MAIÚSCULAS e a <code>cor</code> em minúsculas.", startCode: "SELECT UPPER(nome), LOWER(cor) \nFROM produtos;", solution: "SELECT UPPER(nome), LOWER(cor) FROM produtos;", validator: (res) => res && res[0] && res[0].values[0][0] === res[0].values[0][0].toUpperCase() },
@@ -321,6 +326,63 @@ const themes = {
         ]
     }
 };
+
+// --- Ajudantes de validação ---
+// Compara o último resultado do aluno com o resultado de uma query de referência.
+// ordered: true exige a mesma ordem de linhas. Nomes de colunas são ignorados,
+// a menos que se passe columns: ['a','b'] (exige essas colunas, sem diferenciar maiúsculas).
+function sameResult(res, refSql, opts) {
+    opts = opts || {};
+    if (!res || !res.length) return false;
+    const mine = res[res.length - 1];
+    let ref;
+    try { ref = db.exec(refSql); } catch (e) { return false; }
+    const refSet = ref.length ? ref[ref.length - 1] : { columns: [], values: [] };
+    if (opts.columns) {
+        const cols = mine.columns.map(c => c.toLowerCase());
+        if (!opts.columns.every(c => cols.includes(c.toLowerCase()))) return false;
+    }
+    if (mine.columns.length !== refSet.columns.length) return false;
+    const norm = v => (typeof v === 'number') ? Math.round(v * 100) / 100 : v;
+    const rows = r => r.values.map(row => JSON.stringify(row.map(norm)));
+    let a = rows(mine), b = rows(refSet);
+    if (!opts.ordered) { a = a.slice().sort(); b = b.slice().sort(); }
+    return a.length === b.length && a.every((x, i) => x === b[i]);
+}
+
+// --- Montagem das lições ---
+// Rótulos de conceito das 23 lições originais (pelo id da lição).
+const baseLessonConcepts = [
+    'SELECT *', 'SELECT + AS', 'SELECT DISTINCT', 'WHERE =', 'WHERE AND',
+    'ORDER BY ASC', 'ORDER BY + LIMIT', 'COUNT(*)', 'SUM()', 'GROUP BY',
+    'INNER JOIN', 'JOIN múltiplo', 'INSERT INTO', 'UPDATE SET', 'DELETE',
+    'Subquery', 'Window Function', 'CASE WHEN', 'UPPER / LOWER',
+    'SUBSTR / LENGTH', 'REPLACE / ||', 'Funções de data', 'CREATE INDEX'
+];
+
+// Junta as lições extras (licoes-extras.js), ordena por módulo e numera.
+// O progresso é salvo pelo id da lição, então incluir lições novas
+// não bagunça o progresso já salvo pelos alunos.
+function buildThemeLessons() {
+    const extras = (typeof extraLessons !== 'undefined') ? extraLessons : {};
+    Object.keys(themes).forEach(key => {
+        const theme = themes[key];
+        const extra = extras[key];
+        let all = theme.lessons.map((l, i) => Object.assign({ concept: baseLessonConcepts[l.id] || l.title, order: i }, l));
+        if (extra) {
+            if (extra.setup) theme.setupQuery += '\n' + extra.setup;
+            all = all.concat(extra.lessons.map((l, i) => Object.assign({ order: 1000 + i }, l)));
+        }
+        all.sort((a, b) => (a.moduleId - b.moduleId) || ((a.after !== undefined ? a.after + 0.5 : a.order) - (b.after !== undefined ? b.after + 0.5 : b.order)));
+        all.forEach((l, i) => {
+            const clean = l.title.replace(/^\d+\.\s*/, '');
+            l.title = `${i + 1}. ${clean}`;
+            l.concept = `${i + 1}. ${l.concept}`;
+        });
+        theme.lessons = all;
+    });
+}
+buildThemeLessons();
 
 // --- Initialization ---
 async function init() {
@@ -375,18 +437,16 @@ async function init() {
         if(editor) setTimeout(() => editor.refresh(), 300);
     });
 
-    let allModulesCollapsed = false;
+    let allModulesCollapsed = true;
     document.getElementById('btn-toggle-modules').addEventListener('click', function() {
         allModulesCollapsed = !allModulesCollapsed;
-        document.querySelectorAll('.module-group').forEach(group => {
-            if (allModulesCollapsed) {
-                group.classList.add('collapsed');
-            } else {
-                group.classList.remove('collapsed');
-            }
-        });
+        openModules.clear();
+        if (!allModulesCollapsed) modules.forEach(m => openModules.add(m.id));
+        renderLessonList();
         this.innerHTML = allModulesCollapsed ? '<i class="ph-bold ph-arrows-out-line-vertical"></i>' : '<i class="ph-bold ph-arrows-in-line-vertical"></i>';
     });
+
+    document.getElementById('btn-restore-db').addEventListener('click', restoreDatabase);
 
     const authorLink = document.getElementById('author-link');
     if (authorLink) {
@@ -432,7 +492,7 @@ async function init() {
     document.querySelector('.logo').addEventListener('click', () => {
         logoClicks++;
         if (logoClicks >= 3) {
-            completedLessons = new Set(Array.from({length: 23}, (_, i) => i));
+            completedLessons = new Set(themes[currentThemeId].lessons.map(l => l.id));
             updateProgress();
             renderLessonList();
             showFeedback("MODO TESTE: Certificado Liberado!", "success");
@@ -569,6 +629,9 @@ async function init() {
             const themeId = this.getAttribute('data-theme');
             selectTheme(themeId);
         });
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTheme(this.getAttribute('data-theme')); }
+        });
     });
 
     document.getElementById('btn-change-theme').addEventListener('click', function() {
@@ -616,7 +679,7 @@ function selectTheme(themeId) {
     const theme = themes[themeId];
     
     // Update Header
-    document.getElementById('app-title').innerText = `Banco de Dados: ${theme.title}`;
+    document.getElementById('app-title').innerText = theme.title;
     document.getElementById('header-logo-icon').innerHTML = theme.icon;
 
     // Update Schema Box
@@ -727,8 +790,12 @@ function initDBForTheme(theme) {
 function initEditor() {
     editor = CodeMirror.fromTextArea(document.getElementById('sql-editor'), {
         mode: 'text/x-sql',
-        theme: 'dracula', 
+        theme: 'stockler',
         lineNumbers: true,
+        extraKeys: {
+            'Ctrl-Enter': () => executeUserQuery(),
+            'Cmd-Enter': () => executeUserQuery()
+        },
         autoCloseBrackets: true,
         matchBrackets: true,
         indentUnit: 4,
@@ -790,80 +857,97 @@ function initResizers() {
     });
 }
 
-// SQL concept labels shown in the sidebar (position-based, same across all themes)
-const sqlLessonTitles = [
-    '1. SELECT *',
-    '2. SELECT + AS',
-    '3. SELECT DISTINCT',
-    '4. WHERE =',
-    '5. WHERE AND',
-    '6. ORDER BY ASC',
-    '7. ORDER BY + LIMIT',
-    '8. COUNT(*)',
-    '9. SUM()',
-    '10. GROUP BY',
-    '11. INNER JOIN',
-    '12. JOIN Múltiplo',
-    '13. INSERT INTO',
-    '14. UPDATE SET',
-    '15. DELETE',
-    '16. Subquery',
-    '17. Window Function',
-    '18. CASE WHEN',
-    '19. Funções de Texto',
-    '20. CREATE INDEX',
-    '21. LEFT / RIGHT / LEN',
-    '22. REPLACE / CONCAT',
-    '23. Funções de Data'
-];
+
+// Módulos abertos na barra lateral (o módulo da lição atual abre sozinho).
+const openModules = new Set();
+let lastAutoOpenedLesson = null;
 
 function renderLessonList() {
     const list = document.getElementById('lesson-list');
     list.innerHTML = '';
-    
+
     const themeLessons = themes[currentThemeId].lessons;
+    const current = themeLessons[currentLessonId];
+    if (current && lastAutoOpenedLesson !== `${currentThemeId}:${current.id}`) {
+        openModules.add(current.moduleId);
+        lastAutoOpenedLesson = `${currentThemeId}:${current.id}`;
+    }
 
     modules.forEach(mod => {
-        const modGroup = document.createElement('div');
-        modGroup.className = 'module-group collapsed';
-        
-        const modHeader = document.createElement('div');
-        modHeader.className = 'module-header';
-        modHeader.innerHTML = `<span>${mod.title}</span> <i class="ph-bold ph-caret-down"></i>`;
-        
-        modHeader.addEventListener('click', () => {
-            modGroup.classList.toggle('collapsed');
-        });
-        
-        modGroup.appendChild(modHeader);
-        
         const modLessons = themeLessons.filter(l => l.moduleId === mod.id);
+        if (!modLessons.length) return;
+        const doneCount = modLessons.filter(l => completedLessons.has(l.id)).length;
+        const isOpen = openModules.has(mod.id);
+        const hasCurrent = current && current.moduleId === mod.id;
+
+        const modGroup = document.createElement('div');
+        modGroup.className = `module-group ${isOpen ? '' : 'collapsed'} ${doneCount === modLessons.length ? 'module-done' : ''} ${hasCurrent ? 'module-current' : ''}`;
+
+        const name = mod.title.replace(/^Módulo\s*\d+:\s*/, '');
+        const cells = modLessons.map(l => {
+            const idx = themeLessons.indexOf(l);
+            return `<span class="map-cell ${completedLessons.has(l.id) ? 'done' : ''} ${idx === currentLessonId ? 'current' : ''}"></span>`;
+        }).join('');
+
+        const modHeader = document.createElement('button');
+        modHeader.type = 'button';
+        modHeader.className = 'module-header';
+        modHeader.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        modHeader.innerHTML = `
+            <span class="module-num">${mod.id}</span>
+            <span class="module-name">${name}</span>
+            <span class="module-count">${doneCount}/${modLessons.length}</span>
+            <span class="module-map" aria-hidden="true">${cells}</span>`;
+        modHeader.addEventListener('click', () => {
+            if (openModules.has(mod.id)) openModules.delete(mod.id); else openModules.add(mod.id);
+            renderLessonList();
+        });
+        modGroup.appendChild(modHeader);
+
+        const items = document.createElement('div');
+        items.className = 'module-lessons';
         modLessons.forEach(lesson => {
             const index = themeLessons.indexOf(lesson);
-            const li = document.createElement('div');
-            li.className = `lesson-item ${index === currentLessonId ? 'active' : ''} ${completedLessons.has(index) ? 'completed' : ''}`;
-            
-            const statusIcon = completedLessons.has(index)
-                ? '<i class="ph-fill ph-check-circle lesson-item-icon"></i>'
-                : '<i class="ph ph-lock-key lesson-item-icon" style="opacity: 0.3;"></i>';
-
-            // Use SQL concept title for sidebar; fallback to lesson.title
-            const displayTitle = sqlLessonTitles[index] || lesson.title;
-            
-            li.innerHTML = `<span>${displayTitle}</span>${statusIcon}`;
+            const done = completedLessons.has(lesson.id);
+            const li = document.createElement('button');
+            li.type = 'button';
+            li.className = `lesson-item ${index === currentLessonId ? 'active' : ''} ${done ? 'completed' : ''}`;
+            if (index === currentLessonId) li.setAttribute('aria-current', 'step');
+            const statusIcon = done
+                ? '<i class="ph-fill ph-check-circle lesson-item-icon" aria-label="Concluída"></i>'
+                : '<i class="ph ph-circle lesson-item-icon" aria-hidden="true"></i>';
+            li.innerHTML = `<span class="lesson-concept">${lesson.concept || lesson.title}</span>${statusIcon}`;
+            li.title = lesson.title;
             li.addEventListener('click', () => loadLesson(index));
-            
-            modGroup.appendChild(li);
+            items.appendChild(li);
         });
-        
+        modGroup.appendChild(items);
         list.appendChild(modGroup);
     });
+}
+
+// Recria o banco do cenário e reaplica as soluções das lições anteriores,
+// para que a lição atual encontre os dados no estado esperado.
+function restoreDatabase() {
+    const theme = themes[currentThemeId];
+    if (db) db.close();
+    db = new SQL.Database();
+    db.run(theme.setupQuery);
+    for (let i = 0; i < currentLessonId; i++) {
+        try { db.exec(theme.lessons[i].solution); } catch (e) { /* segue mesmo se uma solução falhar */ }
+    }
+    document.getElementById('results-container').innerHTML = `
+        <div class="empty-state">
+            <i class="ph-fill ph-arrow-counter-clockwise"></i>
+            <p>Banco restaurado. Os dados estão como no início desta lição.</p>
+        </div>`;
+    showFeedback("Banco restaurado", "success");
 }
 
 function updateProgress() {
     const theme = themes[currentThemeId];
     const total = theme.lessons.length;
-    const completed = completedLessons.size;
+    const completed = theme.lessons.filter(l => completedLessons.has(l.id)).length;
     const percentage = Math.round((completed / total) * 100);
 
     document.getElementById('progress-fill').style.width = percentage + '%';
@@ -899,17 +983,20 @@ function loadLesson(index) {
     const lesson = theme.lessons[index];
     
     document.getElementById('lesson-icon').innerHTML = lesson.icon;
-    document.getElementById('lesson-title').innerHTML = lesson.title;
+    document.getElementById('lesson-title').innerHTML = lesson.title.replace(/^\d+\.\s*/, '');
     document.getElementById('lesson-theory').innerHTML = lesson.theory;
     document.getElementById('lesson-task').innerHTML = lesson.task;
     
     const mod = modules.find(m => m.id === lesson.moduleId);
     document.getElementById('module-badge').innerText = mod.title;
+    document.getElementById('lesson-concept').innerText = (lesson.concept || '').replace(/^\d+\.\s*/, '');
+    document.getElementById('lesson-position').innerText = `Lição ${index + 1} de ${theme.lessons.length}`;
+    document.querySelector('.content-scroll-area').scrollTop = 0;
     
     document.getElementById('solution-code').textContent = lesson.solution;
     
     const statusInd = document.getElementById('lesson-status');
-    if (completedLessons.has(index)) {
+    if (completedLessons.has(lesson.id)) {
         statusInd.innerHTML = '<i class="ph-fill ph-check-circle"></i> Concluído';
         statusInd.className = 'status-indicator success';
     } else {
@@ -923,14 +1010,16 @@ function loadLesson(index) {
     document.getElementById('results-container').innerHTML = `
         <div class="empty-state">
             <i class="ph-fill ph-terminal-window"></i>
-            <p>Clique em Executar para ver a saída.</p>
+            <p>Execute a consulta para ver o resultado aqui.</p>
         </div>
     `;
     hideFeedback();
     document.getElementById('solution-accordion').classList.remove('open');
     document.getElementById('next-lesson-btn').classList.add('hidden');
     
-    renderLessonList(); 
+    renderLessonList();
+    const activeItem = document.querySelector('.lesson-item.active');
+    if (activeItem) activeItem.scrollIntoView({ block: 'nearest' });
 }
 
 function advanceToNextLesson() {
@@ -960,13 +1049,13 @@ function executeUserQuery() {
             // Pedagogical Feature: The query is valid SQL and ran successfully, 
             // but it's just not the correct answer for the exercise.
             playWarningSound();
-            showFeedback("Query executada com sucesso! Mas o resultado não resolve o desafio.", "warning");
+            showFeedback("A consulta rodou, mas o resultado ainda não é o pedido no desafio.", "warning");
         }
     } catch (err) {
         // Syntax error or runtime execution error
         playErrorSound();
         renderError(err.message);
-        showFeedback("Erro de Sintaxe no Banco de Dados", "error");
+        showFeedback("Erro na consulta", "error");
     }
 }
 
@@ -989,47 +1078,49 @@ function renderResults(res) {
     
     let tableHTML = '<table><thead><tr>';
     // Add row number column header (blank in SSMS)
-    tableHTML += `<th style="width: 30px;"></th>`;
-    columns.forEach(col => {
-        tableHTML += `<th>${col}</th>`;
+    tableHTML += `<th class="row-num"></th>`;
+    columns.forEach((col, ci) => {
+        const numeric = values.length && values.every(r => r[ci] === null || typeof r[ci] === 'number');
+        tableHTML += `<th${numeric ? ' class="num"' : ''}>${col}</th>`;
     });
     tableHTML += '</tr></thead><tbody>';
     
     values.forEach((row, index) => {
         tableHTML += '<tr>';
         // Add row number
-        tableHTML += `<td style="background-color: #f0f0f0; color: #333; text-align: center; border-right: 1px solid #d0d0d0;">${index + 1}</td>`;
+        tableHTML += `<td class="row-num">${index + 1}</td>`;
         row.forEach(val => {
-            tableHTML += `<td>${val !== null ? val : '<span style="color:#aaa; font-style:italic;">NULL</span>'}</td>`;
+            const isNum = typeof val === 'number';
+            tableHTML += `<td${isNum ? ' class="num"' : ''}>${val !== null ? val : '<span class="null-value">NULL</span>'}</td>`;
         });
         tableHTML += '</tr>';
     });
     
     tableHTML += '</tbody></table>';
-    container.innerHTML = tableHTML;
+    const footer = `<div class="result-footer">${values.length} ${values.length === 1 ? 'linha' : 'linhas'}</div>`;
+    container.innerHTML = tableHTML + footer;
 }
 
 function renderError(errorMsg) {
     const container = document.getElementById('results-container');
+    const safe = String(errorMsg).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
     container.innerHTML = `
-        <div style="padding: 24px;">
-            <div style="color: #ff6b6b; background-color: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.2); padding: 16px; border-radius: 8px;">
-                <h4 style="margin-bottom: 8px; font-weight: 600; display:flex; align-items:center; gap:8px;">
-                    <i class="ph-fill ph-warning-circle"></i> Erro de Execução
-                </h4>
-                <code style="font-family: var(--font-mono); font-size: 13px; color: #ffb3b3;">${errorMsg}</code>
-            </div>
+        <div class="error-box">
+            <h4><i class="ph-fill ph-warning-circle"></i> O banco recusou a consulta</h4>
+            <code>${safe}</code>
+            <p>Confira vírgulas, aspas e nomes de tabelas e colunas no pesquisador de objetos.</p>
         </div>
     `;
 }
 
 function markCompleted() {
-    if(!completedLessons.has(currentLessonId)) {
+    const doneLesson = themes[currentThemeId].lessons[currentLessonId];
+    if(!completedLessons.has(doneLesson.id)) {
         playWinnerSound();
     }
     
-    completedLessons.add(currentLessonId);
-    showFeedback("Sintaxe Correta!", "success");
+    completedLessons.add(doneLesson.id);
+    showFeedback("Desafio concluído!", "success");
     
     const statusInd = document.getElementById('lesson-status');
     statusInd.innerHTML = '<i class="ph-fill ph-check-circle"></i> Concluído';
