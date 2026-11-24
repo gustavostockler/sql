@@ -512,121 +512,31 @@ async function init() {
     }
 
     document.getElementById('btn-generate-final').addEventListener('click', function() {
-        const name = document.getElementById('student-name-input').value;
-        if (!name.trim()) {
-            alert("Por favor, digite seu nome completo.");
+        const input = document.getElementById('student-name-input');
+        const name = input.value.trim();
+        if (!name) {
+            input.focus();
+            input.classList.add('invalid');
+            input.placeholder = 'Digite seu nome completo para gerar o certificado';
             return;
         }
-        
-        document.getElementById('display-student-name').innerText = name.toUpperCase();
-
-        const st = getCourseStats();
-        const courseName = '<strong>SQL na Prática: Treinamento Interativo Online</strong>';
-        const summary = document.getElementById('cert-summary-text');
-        if (st.complete) {
-            summary.innerHTML = `concluiu com êxito o treinamento ${courseName}, com 15 módulos que cobrem SELECT, filtros, agregações com GROUP BY e HAVING, JOINs (inclusive LEFT JOIN), subqueries, CTEs, window functions, CASE WHEN, tratamento de nulos, UNION, criação de tabelas e views, índices e desafios de negócio, através de prática intensiva em cenários reais.`;
-            document.getElementById('cert-hours-display').innerText = formatHours(COURSE_HOURS, true);
-        } else {
-            const studied = st.modulesStudied.length ? ` Conteúdos praticados: ${st.modulesStudied.join(', ')}.` : '';
-            summary.innerHTML = `participou do treinamento ${courseName}, concluindo ${st.done} de ${st.total} lições (${st.percent}%) no cenário ${st.themeTitle}.${studied}`;
-            document.getElementById('cert-hours-display').innerText = `${formatHours(st.hours, true)} de ${formatHours(COURSE_HOURS, true)} (parcial)`;
-        }
-        
-        const now = new Date();
-        document.getElementById('cert-date-display').innerText = now.toLocaleDateString('pt-BR');
-        
+        input.classList.remove('invalid');
         document.getElementById('cert-step-1').classList.add('hidden');
         document.getElementById('cert-step-2').classList.remove('hidden');
+        renderCertificatePreview(name);
     });
 
-    document.getElementById('btn-print-cert').addEventListener('click', function() {
-        const certHtml = document.getElementById('certificate-area').innerHTML;
-        const printWindow = window.open('', '_blank', 'width=1100,height=800');
-        
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Certificado - SQL Masterclass</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Dancing+Script&display=swap" rel="stylesheet">
-                    <style>
-                        * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                        html, body { 
-                            margin: 0; 
-                            padding: 0; 
-                            background: white; 
-                            font-family: 'Inter', sans-serif;
-                            width: 297mm;
-                            height: 210mm;
-                            overflow: hidden;
-                        }
-                        @page { size: A4 landscape; margin: 0; }
-                        .certificate-paper {
-                            width: 297mm;
-                            height: 210mm;
-                            padding: 0;
-                            margin: 0;
-                            position: relative;
-                            overflow: hidden;
-                            display: flex;
-                            flex-direction: column;
-                            background: white;
-                        }
-                        .cert-pattern {
-                            position: absolute;
-                            inset: 0;
-                            opacity: 0.1;
-                            background-image: linear-gradient(30deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
-                            linear-gradient(150deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
-                            linear-gradient(60deg, #2ecc71 25%, transparent 25.5%, transparent 75%, #2ecc71 75%, #2ecc71);
-                            background-size: 80px 140px;
-                        }
-                        .cert-header-accent { position: absolute; top: 0; left: 0; right: 0; height: 12px; background: linear-gradient(90deg, #2980b9, #2ecc71, #27ae60); }
-                        .cert-footer-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #27ae60, #2980b9); }
-                        .cert-content {
-                            width: 100%; height: 100%; position: relative; z-index: 2;
-                            display: flex; flex-direction: column; padding: 18mm 20mm;
-                            background: rgba(255, 255, 255, 0.92);
-                            align-items: center;
-                        }
-                        .cert-top { display: flex; flex-direction: column; align-items: center; margin-bottom: 8mm; }
-                        .brand-main { font-size: 22pt; font-weight: 900; color: #2c3e50; letter-spacing: 5pt; }
-                        .brand-sub { font-size: 8pt; font-weight: 700; color: #7f8c8d; letter-spacing: 2pt; margin-top: 4pt; }
-                        .cert-title-modern { font-size: 58pt; font-weight: 300; color: #2c3e50; margin: 6mm 0 0 0; letter-spacing: 15pt; text-transform: uppercase; }
-                        .cert-title-divider { width: 90mm; height: 1pt; background: linear-gradient(90deg, transparent, #2980b9, transparent); position: relative; margin-top: 3mm; }
-                        .cert-title-divider i { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 0 10mm; font-size: 24pt; color: #2980b9; }
-                        
-                        .cert-body-modern { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; }
-                        .cert-intro { font-size: 12pt; color: #7f8c8d; letter-spacing: 3pt; margin-bottom: 4mm; text-transform: uppercase; }
-                        .cert-name-display { font-size: 40pt; font-weight: 700; color: #2c3e50; margin: 4mm 0 6mm 0; text-transform: uppercase; }
-                        .cert-summary-text { font-size: 13pt; line-height: 1.6; max-width: 90%; color: #2d3436; margin-bottom: 8mm; }
-                        .cert-meta-info { display: flex; gap: 12mm; font-size: 11pt; color: #7f8c8d; font-weight: 600; }
-                        .cert-meta-info .divider { color: #bdc3c7; }
-                        
-                        .cert-footer-modern { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10mm; width: 100%; }
-                        .signature-img { font-family: 'Dancing Script', cursive; font-size: 24pt; color: #2c3e50; }
-                        .signature-line { width: 70mm; height: 1pt; background: #bdc3c7; margin: 3mm 0; }
-                        .sig-title { font-size: 9pt; color: #7f8c8d; }
-                        .cert-verification { font-size: 7pt; color: #bdc3c7; max-width: 60mm; text-align: right; }
-                        
-                        @import url('https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css');
-                    </style>
-                </head>
-                <body>
-                    <div class="certificate-paper">
-                        ${certHtml}
-                    </div>
-                    <script>
-                        window.onload = function() {
-                            setTimeout(() => {
-                                window.print();
-                            }, 500);
-                        };
-                    </script>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
+    document.getElementById('student-name-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('btn-generate-final').click();
     });
+
+    document.getElementById('btn-edit-cert-name').addEventListener('click', function() {
+        document.getElementById('cert-step-2').classList.add('hidden');
+        document.getElementById('cert-step-1').classList.remove('hidden');
+        document.getElementById('student-name-input').focus();
+    });
+
+    document.getElementById('btn-print-cert').addEventListener('click', printCertificate);
 
     // Theme Modal Logic
     document.querySelectorAll('.theme-card').forEach(card => {
@@ -1176,6 +1086,230 @@ function showFeedback(msg, type) {
 
 function hideFeedback() {
     document.getElementById('feedback-message').classList.add('hidden');
+}
+
+// =========================================================
+// Certificado: documento A4 paisagem, uma página.
+// A pré-visualização e o PDF usam o mesmo documento (iframe).
+// =========================================================
+
+// Palavra-chave SQL que representa cada módulo no certificado.
+const moduleSkills = {
+    1: 'SELECT', 2: 'WHERE', 3: 'GROUP BY', 4: 'JOIN', 5: 'INSERT / UPDATE',
+    6: 'CTE', 7: 'WINDOW', 8: 'CASE WHEN', 9: 'STRFTIME', 10: 'INDEX',
+    11: 'HAVING', 12: 'LEFT JOIN', 13: 'COALESCE', 14: 'CREATE VIEW', 15: 'ANÁLISE'
+};
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Código curto e estável para identificar o certificado emitido.
+function certificateCode(parts) {
+    let h1 = 5381, h2 = 52711;
+    const s = parts.join('|');
+    for (let i = 0; i < s.length; i++) {
+        const c = s.charCodeAt(i);
+        h1 = (h1 * 33) ^ c;
+        h2 = (h2 * 31) ^ c;
+    }
+    const a = (h1 >>> 0).toString(36).toUpperCase().padStart(7, '0').slice(-4);
+    const b = (h2 >>> 0).toString(36).toUpperCase().padStart(7, '0').slice(-4);
+    return `SQLM-${a}-${b}`;
+}
+
+function buildCertificateDocument(name) {
+    const st = getCourseStats();
+    const theme = themes[currentThemeId];
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('pt-BR');
+    const code = certificateCode([name.trim().toUpperCase(), currentThemeId, dateStr, st.done]);
+    const safeName = escapeHtml(name.trim());
+
+    const kind = st.complete ? 'Certificado de conclusão' : 'Certificado de participação';
+    const statusSql = st.complete ? "'concluído'" : "'em andamento'";
+    const hoursTxt = st.complete
+        ? formatHours(COURSE_HOURS, true)
+        : `${formatHours(st.hours, true)} de ${COURSE_HOURS}`;
+    const summary = st.complete
+        ? `concluiu o treinamento <strong>SQL na Prática: Treinamento Interativo Online</strong>, resolvendo os ${st.total} desafios práticos dos 15 módulos no banco de dados da empresa fictícia ${escapeHtml(theme.title)}: de consultas básicas a JOINs, subqueries, CTEs, window functions, criação de tabelas, views e índices.`
+        : `participou do treinamento <strong>SQL na Prática: Treinamento Interativo Online</strong> e resolveu ${st.done} dos ${st.total} desafios práticos no banco de dados da empresa fictícia ${escapeHtml(theme.title)}. Carga horária parcial, proporcional às lições concluídas.`;
+
+    const skillIds = modules
+        .filter(m => theme.lessons.some(l => l.moduleId === m.id && completedLessons.has(l.id)))
+        .map(m => m.id);
+    const skills = skillIds.length
+        ? skillIds.map(id => `<span class="skill">${moduleSkills[id]}</span>`).join('')
+        : '<span class="skill muted">Nenhum módulo concluído ainda</span>';
+
+    const css = `
+        @page { size: A4 landscape; margin: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        html, body { width: 297mm; height: 210mm; overflow: hidden; background: #fff; }
+        body { font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif; color: #16213A; }
+
+        .sheet { width: 297mm; height: 210mm; display: grid; grid-template-columns: 92mm minmax(0, 1fr); position: relative; overflow: hidden; }
+
+        /* Painel de código */
+        .rail { background: #16213A; color: #DCE3F1; padding: 14mm 10mm 12mm 12mm; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .rail::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 6mm 6mm; pointer-events: none; }
+        .rail > * { position: relative; z-index: 1; }
+        .brand { display: flex; align-items: center; gap: 3.5mm; }
+        .brand svg { width: 11mm; height: 11mm; flex-shrink: 0; }
+        .brand-name { font-size: 13pt; font-weight: 600; color: #fff; line-height: 1.1; }
+        .brand-sub { font-size: 8pt; color: #8C9AB8; margin-top: 1mm; }
+
+        .query { margin-top: auto; font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 9.6pt; line-height: 1.75; white-space: pre; }
+        .ln { display: inline-block; width: 6mm; color: #4D5C80; user-select: none; }
+        .kw { color: #8FB0FF; font-weight: 600; }
+        .str { color: #F2C47E; }
+        .cm { color: #6E7EA3; font-style: italic; }
+        .fn { color: #7FD8C4; }
+
+        .result { margin-top: 7mm; border: 0.3mm solid #2A3A5C; border-radius: 1.5mm; overflow: hidden; font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 8pt; }
+        .result-row { display: grid; grid-template-columns: 1fr auto; padding: 1.8mm 3mm; }
+        .result-row.head { background: #1E2B47; color: #8C9AB8; }
+        .result-row.data { color: #fff; }
+        .result-row.data span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 3mm; }
+        .result-meta { margin-top: 2mm; margin-bottom: auto; font-family: 'IBM Plex Mono', monospace; font-size: 7.5pt; color: #5FD3A0; }
+
+        .rail-foot { margin-top: 0; padding-top: 14mm; font-size: 7.5pt; color: #8C9AB8; line-height: 1.5; }
+        .rail-foot b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5pt; color: #fff; font-weight: 500; letter-spacing: .04em; }
+
+        /* Área principal */
+        .main { padding: 14mm 16mm 12mm 16mm; display: flex; flex-direction: column; position: relative; min-width: 0; }
+        .body { margin: auto 0; padding: 4mm 0 6mm; }
+        .main::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2.2mm; background: linear-gradient(90deg, #2350D0 0 62%, #12805A 62% 100%); }
+        .top { display: flex; justify-content: space-between; align-items: baseline; }
+        .kind { font-size: 11pt; font-weight: 600; color: #2350D0; }
+        .issuer { font-size: 8.5pt; color: #6B7488; }
+
+        .certify { font-size: 11pt; color: #4A5468; }
+        .name { margin-top: 2mm; font-family: 'IBM Plex Serif', Georgia, serif; font-weight: 500; font-size: 40pt; line-height: 1.12; max-width: 100%; overflow: hidden; color: #16213A; letter-spacing: -0.01em; white-space: nowrap; }
+        .name-rule { margin-top: 3.5mm; height: 0.4mm; width: 34mm; background: #16213A; }
+        .summary { margin-top: 7mm; font-size: 11pt; line-height: 1.6; color: #2B3447; max-width: 165mm; }
+        .summary strong { font-weight: 600; color: #16213A; }
+
+        /* Dados no formato de grade de resultado */
+        .grid { margin-top: 8mm; display: grid; grid-template-columns: 1.25fr 1fr 1fr 1fr; border: 0.3mm solid #C3CBD8; border-radius: 1.5mm; overflow: hidden; }
+        .cell { padding: 2.6mm 4mm 3mm; border-right: 0.3mm solid #DCE1E9; }
+        .cell:last-child { border-right: none; }
+        .cell .k { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 7.5pt; color: #6B7488; padding-bottom: 1.8mm; margin-bottom: 1.8mm; border-bottom: 0.3mm solid #DCE1E9; }
+        .cell .v { display: block; font-size: 13pt; font-weight: 600; color: #16213A; font-variant-numeric: tabular-nums; }
+        .cell .v small { font-size: 9pt; font-weight: 500; color: #6B7488; }
+
+        .skills-label { margin-top: 6mm; font-size: 8.5pt; color: #6B7488; }
+        .skills { margin-top: 2mm; display: flex; flex-wrap: wrap; gap: 1.6mm; }
+        .skill { font-family: 'IBM Plex Mono', monospace; font-size: 7.6pt; font-weight: 500; color: #16213A; background: #F3F5F8; border: 0.3mm solid #DCE1E9; border-radius: 1mm; padding: 0.8mm 2.2mm; }
+        .skill.muted { color: #6B7488; }
+
+        .foot { display: flex; justify-content: space-between; align-items: flex-end; }
+        .sign .script { font-family: 'Dancing Script', cursive; font-size: 22pt; color: #16213A; line-height: 1; padding-left: 2mm; }
+        .sign .line { width: 68mm; height: 0.3mm; background: #9AA4B6; margin: 2mm 0 1.6mm; }
+        .sign .who { font-size: 9pt; font-weight: 600; }
+        .sign .role { font-size: 8pt; color: #6B7488; }
+        .seal { width: 32mm; height: 32mm; flex-shrink: 0; }
+    `;
+
+    const dbIcon = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2350D0"/><g fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"><ellipse cx="32" cy="17" rx="15" ry="6"/><path d="M17 17v30c0 3.3 6.7 6 15 6s15-2.7 15-6V17"/><path d="M17 32c0 3.3 6.7 6 15 6s15-2.7 15-6"/></g></svg>`;
+
+    const sealColor = st.complete ? '#B98A1E' : '#6B7488';
+    const sealText = st.complete ? 'SQL MASTERCLASS • CERTIFICADO DE CONCLUSÃO •' : 'SQL MASTERCLASS • CERTIFICADO DE PARTICIPAÇÃO •';
+    const seal = `<svg class="seal" viewBox="0 0 120 120" aria-hidden="true">
+        <defs><path id="circ" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs>
+        <circle cx="60" cy="60" r="57" fill="none" stroke="${sealColor}" stroke-width="1.5"/>
+        <circle cx="60" cy="60" r="35" fill="${sealColor}"/>
+        <text font-family="IBM Plex Mono, monospace" font-size="8.2" font-weight="600" fill="${sealColor}"><textPath href="#circ" textLength="276" lengthAdjust="spacing">${sealText}</textPath></text>
+        <text x="60" y="58" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="16" font-weight="600" fill="#fff">SQL</text>
+        <text x="60" y="75" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="600" fill="#fff">${st.complete ? formatHours(COURSE_HOURS) : formatHours(st.hours)}</text>
+    </svg>`;
+
+    const shortName = escapeHtml(name.trim().split(/\s+/).slice(0, 2).join(' '));
+
+    return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<title>Certificado SQL Masterclass - ${safeName}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500&family=Dancing+Script:wght@600&display=block" rel="stylesheet">
+<style>${css}</style></head><body>
+<div class="sheet">
+  <aside class="rail">
+    <div class="brand">${dbIcon}<div><div class="brand-name">SQL Masterclass</div><div class="brand-sub">Stockler Treinamentos</div></div></div>
+    <div class="query"><span class="ln">1</span><span class="cm">-- emissão do certificado</span>
+<span class="ln">2</span><span class="kw">SELECT</span> aluno,
+<span class="ln">3</span>       carga_horaria
+<span class="ln">4</span><span class="kw">FROM</span>   alunos
+<span class="ln">5</span><span class="kw">WHERE</span>  status = <span class="str">${statusSql}</span>
+<span class="ln">6</span>  <span class="kw">AND</span>  licoes &gt;= <span class="fn">${st.done}</span>;</div>
+    <div class="result">
+      <div class="result-row head"><span>aluno</span><span>carga_horaria</span></div>
+      <div class="result-row data"><span>${shortName}</span><span>${st.complete ? formatHours(COURSE_HOURS) : formatHours(st.hours)}</span></div>
+    </div>
+    <div class="result-meta">✓ 1 linha retornada</div>
+    <div class="rail-foot"><b>${code}</b>Código do certificado</div>
+  </aside>
+  <main class="main">
+    <div class="top"><span class="kind">${kind}</span><span class="issuer">Emitido em ${dateStr}</span></div>
+    <div class="body">
+    <p class="certify">Certificamos que</p>
+    <h1 class="name" id="name">${safeName}</h1>
+    <div class="name-rule"></div>
+    <p class="summary">${summary}</p>
+    <div class="grid">
+      <div class="cell"><span class="k">carga_horaria</span><span class="v">${hoursTxt}${st.complete ? '' : ' <small>horas</small>'}</span></div>
+      <div class="cell"><span class="k">desafios</span><span class="v">${st.done} <small>de ${st.total}</small></span></div>
+      <div class="cell"><span class="k">aproveitamento</span><span class="v">${st.percent}%</span></div>
+      <div class="cell"><span class="k">emissao</span><span class="v">${dateStr}</span></div>
+    </div>
+    <p class="skills-label">Conteúdos praticados</p>
+    <div class="skills">${skills}</div>
+    </div>
+    <div class="foot">
+      <div class="sign"><div class="script">Gustavo Stockler</div><div class="line"></div><div class="who">Gustavo Stockler</div><div class="role">Criador do curso, Stockler Treinamentos</div></div>
+      ${seal}
+    </div>
+  </main>
+</div>
+<script>
+  // Reduz a fonte do nome até caber na largura disponível.
+  function fitName() {
+    var el = document.getElementById('name');
+    var size = 40;
+    while (el.scrollWidth > el.clientWidth && size > 16) { size -= 1; el.style.fontSize = size + 'pt'; }
+  }
+  window.certReady = (document.fonts ? document.fonts.ready : Promise.resolve()).then(fitName);
+</script>
+</body></html>`;
+}
+
+// Mostra o certificado no modal, escalado para caber na tela.
+function renderCertificatePreview(name) {
+    const area = document.getElementById('certificate-area');
+    area.innerHTML = '<div class="cert-frame-wrap"><iframe id="cert-frame" title="Pré-visualização do certificado"></iframe></div>';
+    const frame = document.getElementById('cert-frame');
+    frame.srcdoc = buildCertificateDocument(name);
+    fitCertificatePreview();
+}
+
+function fitCertificatePreview() {
+    const wrap = document.querySelector('.cert-frame-wrap');
+    const frame = document.getElementById('cert-frame');
+    if (!wrap || !frame) return;
+    const pageW = 1123, pageH = 794; // A4 paisagem em px (96 dpi)
+    const scale = Math.min(1, wrap.parentElement.clientWidth / pageW);
+    frame.style.transform = `scale(${scale})`;
+    wrap.style.width = (pageW * scale) + 'px';
+    wrap.style.height = (pageH * scale) + 'px';
+}
+
+window.addEventListener('resize', fitCertificatePreview);
+
+async function printCertificate() {
+    const frame = document.getElementById('cert-frame');
+    if (!frame) return;
+    const win = frame.contentWindow;
+    try { if (win.certReady) await win.certReady; } catch (e) { /* imprime mesmo assim */ }
+    win.focus();
+    win.print();
 }
 
 window.addEventListener('DOMContentLoaded', init);

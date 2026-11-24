@@ -1295,393 +1295,69 @@ tbody tr:hover td.row-num { background: var(--paper); }
 /* =========================================================
    Certificado (modal + impressão)
    ========================================================= */
-.certificate-modal-content {
-    max-width: 960px;
-}
+
+.certificate-modal-content { max-width: 1100px; }
 
 .cert-input-step {
-    max-width: 480px;
+    max-width: 520px;
     margin: 0 auto;
-    padding: 20px 0;
+    padding: 8px 0;
 }
 
 .cert-input {
     width: 100%;
-    padding: 16px 20px;
-    border: 2px solid var(--border-light);
-    border-radius: 10px;
-    font-size: 18px;
+    height: 48px;
+    padding: 0 14px;
     font-family: var(--font-sans);
-    font-weight: 500;
-    margin-top: 16px;
-    outline: none;
-    color: var(--text-light-primary);
-    background: #fff;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    letter-spacing: 0.5px;
+    font-size: 17px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-m);
 }
 
-.cert-input::placeholder {
-    color: #adb5bd;
-    font-weight: 400;
-}
+.cert-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.cert-input.invalid { border-color: var(--err); box-shadow: 0 0 0 3px var(--err-soft); }
+.cert-input.invalid::placeholder { color: var(--err); }
 
-.cert-input:focus {
-    border-color: var(--brand-primary);
-    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.12);
-}
+.cert-viewer { display: flex; flex-direction: column; align-items: center; gap: 16px; padding-top: 28px; }
 
-.certificate-paper {
-    background: white;
-    padding: 0;
-    box-sizing: border-box;
+#certificate-area {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+}
+
+.cert-frame-wrap {
     position: relative;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-    color: #2d3436;
-    overflow: visible;
-    
-    /* Screen specific dimensions */
-    width: 850px;
-    min-height: 600px;
-    height: auto;
-    margin: 20px auto;
-    padding-bottom: 40px;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px var(--line), 0 12px 32px rgba(22, 33, 58, 0.18);
+    background: #fff;
 }
 
-.cert-pattern {
-    position: absolute;
-    inset: 0;
-    opacity: 0.05;
-    background-image: linear-gradient(30deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
-    linear-gradient(150deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
-    linear-gradient(30deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
-    linear-gradient(150deg, #3498db 12%, transparent 12.5%, transparent 87%, #3498db 87.5%, #3498db),
-    linear-gradient(60deg, #2ecc71 25%, transparent 25.5%, transparent 75%, #2ecc71 75%, #2ecc71),
-    linear-gradient(60deg, #2ecc71 25%, transparent 25.5%, transparent 75%, #2ecc71 75%, #2ecc71);
-    background-size: 80px 140px;
-    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
-}
-
-.cert-header-accent {
+#cert-frame {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    height: 15px;
-    background: linear-gradient(90deg, #2980b9, #2ecc71, #27ae60);
-}
-
-.cert-footer-accent {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: linear-gradient(90deg, #27ae60, #2980b9);
-}
-
-.cert-content {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    padding: 40px 60px;
-    background: rgba(255, 255, 255, 0.95);
-}
-
-.cert-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.cert-brand {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.brand-main {
-    display: block;
-    font-size: 24px;
-    font-weight: 900;
-    color: #2c3e50;
-    letter-spacing: 4px;
-}
-
-.brand-sub {
-    display: block;
-    font-size: 10px;
-    font-weight: 700;
-    color: #7f8c8d;
-    letter-spacing: 2px;
-    margin-top: 5px;
-}
-
-.cert-title-modern {
-    font-size: 64px;
-    font-weight: 300;
-    color: #2c3e50;
-    margin: 0;
-    letter-spacing: 12px;
-}
-
-.cert-title-divider {
-    width: 300px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #2980b9, transparent);
-    position: relative;
-    margin-top: 10px;
-}
-
-.cert-title-divider i {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 0 15px;
-    font-size: 32px;
-    color: #2980b9;
-}
-
-.cert-body-modern {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.cert-intro {
-    font-size: 14px;
-    color: #7f8c8d;
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-}
-
-.cert-name-display {
-    font-size: 42px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 5px 0 15px 0;
-    text-transform: uppercase;
-    line-height: 1.2;
-}
-
-.cert-summary-text {
-    font-size: 16px;
-    line-height: 1.6;
-    max-width: 85%;
-    text-align: center;
-    color: #2d3436;
-    margin-bottom: 25px;
-}
-
-.cert-meta-info {
-    display: flex;
-    gap: 20px;
-    font-size: 14px;
-    color: #7f8c8d;
-    font-weight: 600;
-}
-
-.cert-meta-info .divider {
-    color: #bdc3c7;
-}
-
-.cert-footer-modern {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 40px;
-}
-
-.cert-signature-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.signature-img {
-    font-family: 'Dancing Script', cursive;
-    font-size: 32px;
-    color: #2c3e50;
-    margin-bottom: 5px;
-}
-
-.signature-line {
-    width: 250px;
-    height: 1px;
-    background: #bdc3c7;
-    margin-bottom: 10px;
-}
-
-.sig-title {
-    font-size: 11px;
-    color: #7f8c8d;
-    margin-top: 2px;
-}
-
-.cert-verification {
-    font-size: 10px;
-    color: #bdc3c7;
-    max-width: 200px;
-}
-
-.cert-viewer {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 70vh;
-    padding: 30px;
-    background: #eceff1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 8px;
-    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
-}
-
-#certificate-area {
-    /* Auto-scale on small screens, keep fixed on large */
-    max-width: 100%;
-    transform-origin: center top;
-}
-
-@media (max-width: 900px) {
-    .certificate-paper {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 297/210;
-        padding: 15px;
-    }
-    .cert-title { font-size: 6vw; }
-    .cert-student-name { font-size: 5vw; }
-    .cert-text { font-size: 2.5vw; }
+    width: 1123px;
+    height: 794px;
+    border: 0;
+    transform-origin: 0 0;
 }
 
 .cert-actions {
-    width: 100%;
     display: flex;
-    justify-content: center;
-    padding: 20px 0;
-    background: #fff;
-    border-top: 1px solid #eee;
-    margin-top: 20px;
-    position: sticky;
-    bottom: -20px;
-    z-index: 10;
-}
-
-.btn-primary-cert {
-    background: var(--brand-primary);
-    color: white;
-    border: none;
-    padding: 14px 32px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
     gap: 10px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.btn-primary-cert:hover {
-    background: #5b4bc4;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
-}
+.cert-actions .btn-outline-sm { height: 36px; }
 
-@media print {
-    @page {
-        size: A4 landscape;
-        margin: 0;
-    }
-    
-    /* Ensure the root is visible and doesn't clip */
-    html, body {
-        width: 297mm !important;
-        height: 210mm !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-        background: white !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-    /* Hide everything by default */
-    body > * {
-        display: none !important;
-    }
-
-    /* Target the modal specifically */
-    #certificate-modal {
-        display: flex !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 297mm !important;
-        height: 210mm !important;
-        z-index: 99999 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        background: white !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* Force visibility of all ancestors of the certificate paper */
-    .theme-modal-content,
-    .cert-viewer,
-    #certificate-area {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-        box-shadow: none !important;
-        border: none !important;
-        transform: none !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-
-    .certificate-paper {
-        display: flex !important;
-        width: 297mm !important;
-        height: 210mm !important;
-        padding: 15mm !important;
-        margin: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-        background: white !important;
-        position: relative !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Print specific font sizes */
-    .cert-title { font-size: 56px !important; margin-bottom: 10px !important; }
-    .cert-student-name { font-size: 48px !important; margin: 20px 0 !important; }
-    .cert-text { font-size: 16px !important; line-height: 1.5 !important; max-width: 85% !important; }
-    .cert-footer { padding-top: 30px !important; }
-
-    /* Hide UI controls */
-    .cert-actions, #btn-close-cert, .cert-input-step, .theme-modal-close {
-        display: none !important;
-    }
+.cert-print-hint {
+    font-size: 13px;
+    color: var(--text-3);
+    text-align: center;
+    max-width: 62ch;
 }
