@@ -477,27 +477,20 @@ async function init() {
 
     // Certificate Logic
     document.getElementById('btn-certificate').addEventListener('click', function() {
-        if (this.classList.contains('locked')) {
-            showFeedback("Você precisa concluir 100% das lições deste cenário para liberar o certificado!", "warning");
-            return;
+        const st = getCourseStats();
+        const title = document.getElementById('cert-step-title');
+        const sub = document.getElementById('cert-step-subtitle');
+        if (st.complete) {
+            title.innerText = 'Parabéns! Você concluiu o curso';
+            sub.innerText = `Você concluiu as ${st.total} lições do cenário ${st.themeTitle}. O certificado de conclusão registra ${formatHours(COURSE_HOURS)}.`;
+        } else {
+            title.innerText = 'Certificado de horas parciais';
+            sub.innerText = `Você concluiu ${st.done} de ${st.total} lições (${st.percent}%) no cenário ${st.themeTitle}. O certificado vai registrar ${formatHours(st.hours)} de ${formatHours(COURSE_HOURS)}. Conclua todas as lições para receber o certificado de conclusão.`;
         }
         document.getElementById('certificate-modal').classList.add('active');
         document.getElementById('cert-step-1').classList.remove('hidden');
         document.getElementById('cert-step-2').classList.add('hidden');
         document.getElementById('student-name-input').value = "";
-    });
-
-    // Test Shortcut: Click logo 3 times to unlock cert for testing
-    let logoClicks = 0;
-    document.querySelector('.logo').addEventListener('click', () => {
-        logoClicks++;
-        if (logoClicks >= 3) {
-            completedLessons = new Set(themes[currentThemeId].lessons.map(l => l.id));
-            updateProgress();
-            renderLessonList();
-            showFeedback("MODO TESTE: Certificado Liberado!", "success");
-            logoClicks = 0;
-        }
     });
 
     document.getElementById('btn-close-cert').addEventListener('click', function() {
@@ -526,6 +519,18 @@ async function init() {
         }
         
         document.getElementById('display-student-name').innerText = name.toUpperCase();
+
+        const st = getCourseStats();
+        const courseName = '<strong>SQL na Prática: Treinamento Interativo Online</strong>';
+        const summary = document.getElementById('cert-summary-text');
+        if (st.complete) {
+            summary.innerHTML = `concluiu com êxito o treinamento ${courseName}, com 15 módulos que cobrem SELECT, filtros, agregações com GROUP BY e HAVING, JOINs (inclusive LEFT JOIN), subqueries, CTEs, window functions, CASE WHEN, tratamento de nulos, UNION, criação de tabelas e views, índices e desafios de negócio, através de prática intensiva em cenários reais.`;
+            document.getElementById('cert-hours-display').innerText = formatHours(COURSE_HOURS, true);
+        } else {
+            const studied = st.modulesStudied.length ? ` Conteúdos praticados: ${st.modulesStudied.join(', ')}.` : '';
+            summary.innerHTML = `participou do treinamento ${courseName}, concluindo ${st.done} de ${st.total} lições (${st.percent}%) no cenário ${st.themeTitle}.${studied}`;
+            document.getElementById('cert-hours-display').innerText = `${formatHours(st.hours, true)} de ${formatHours(COURSE_HOURS, true)} (parcial)`;
+        }
         
         const now = new Date();
         document.getElementById('cert-date-display').innerText = now.toLocaleDateString('pt-BR');
@@ -884,20 +889,16 @@ function renderLessonList() {
         modGroup.className = `module-group ${isOpen ? '' : 'collapsed'} ${doneCount === modLessons.length ? 'module-done' : ''} ${hasCurrent ? 'module-current' : ''}`;
 
         const name = mod.title.replace(/^Módulo\s*\d+:\s*/, '');
-        const cells = modLessons.map(l => {
-            const idx = themeLessons.indexOf(l);
-            return `<span class="map-cell ${completedLessons.has(l.id) ? 'done' : ''} ${idx === currentLessonId ? 'current' : ''}"></span>`;
-        }).join('');
+        const pct = Math.round((doneCount / modLessons.length) * 100);
 
         const modHeader = document.createElement('button');
         modHeader.type = 'button';
         modHeader.className = 'module-header';
         modHeader.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         modHeader.innerHTML = `
-            <span class="module-num">${mod.id}</span>
+            <span class="module-num" style="--p:${pct}"><span>${mod.id}</span></span>
             <span class="module-name">${name}</span>
-            <span class="module-count">${doneCount}/${modLessons.length}</span>
-            <span class="module-map" aria-hidden="true">${cells}</span>`;
+            <span class="module-count" aria-label="${doneCount} de ${modLessons.length} lições concluídas">${doneCount}/${modLessons.length}</span>`;
         modHeader.addEventListener('click', () => {
             if (openModules.has(mod.id)) openModules.delete(mod.id); else openModules.add(mod.id);
             renderLessonList();
@@ -953,14 +954,36 @@ function updateProgress() {
     document.getElementById('progress-fill').style.width = percentage + '%';
     document.getElementById('progress-text').innerText = percentage + '%';
 
+    const st = getCourseStats();
+    document.getElementById('cert-hours-note').innerText = st.complete
+        ? `Curso concluído: ${formatHours(COURSE_HOURS)}`
+        : `${formatHours(st.hours)} de ${formatHours(COURSE_HOURS)} de curso`;
     const btnCert = document.getElementById('btn-certificate');
-    if (percentage >= 100) {
-        btnCert.classList.remove('locked');
-        btnCert.title = "Gerar Certificado de Conclusão";
-    } else {
-        btnCert.classList.add('locked');
-        btnCert.title = "Conclua 100% do curso para liberar";
-    }
+    btnCert.classList.toggle('earned', st.complete);
+    btnCert.title = st.complete ? 'Gerar certificado de conclusão' : `Gerar certificado com horas parciais (${formatHours(st.hours)})`;
+}
+
+// --- Carga horária ---
+// Carga horária total do curso. As horas parciais são proporcionais às
+// lições concluídas e arredondadas para baixo em meia hora.
+const COURSE_HOURS = 20;
+
+function formatHours(h, long) {
+    const txt = h.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+    if (long) return `${txt} ${h === 1 ? 'hora' : 'horas'}`;
+    return `${txt} h`;
+}
+
+function getCourseStats() {
+    const theme = themes[currentThemeId];
+    const total = theme.lessons.length;
+    const done = theme.lessons.filter(l => completedLessons.has(l.id)).length;
+    const complete = done >= total;
+    const hours = complete ? COURSE_HOURS : Math.floor((done / total) * COURSE_HOURS * 2) / 2;
+    const modulesStudied = modules
+        .filter(m => theme.lessons.some(l => l.moduleId === m.id && completedLessons.has(l.id)))
+        .map(m => m.title.replace(/^Módulo\s*\d+:\s*/, ''));
+    return { total, done, complete, hours, percent: Math.round((done / total) * 100), modulesStudied, themeTitle: theme.title };
 }
 
 function saveProgress() {

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQL Masterclass - by Gustavo Stockler</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316213A'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='4.5' stroke-linecap='round'%3E%3Cellipse cx='32' cy='17' rx='15' ry='6'/%3E%3Cpath d='M17 17v30c0 3.3 6.7 6 15 6s15-2.7 15-6V17'/%3E%3Cpath d='M17 32c0 3.3 6.7 6 15 6s15-2.7 15-6'/%3E%3C/g%3E%3Ccircle cx='48' cy='48' r='10' fill='%2312805A'/%3E%3Cpath d='M43.5 48l3 3 6-6' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <meta name="theme-color" content="#16213A">
     <meta name="description" content="Aprenda SQL na prática, direto no navegador: 15 módulos com exercícios em cenários reais de negócio.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -90,12 +92,12 @@
             <div class="tutorial-content">
                 <p>Cada lição tem uma explicação curta e um desafio. Você escreve a consulta, executa e o sistema confere o resultado.</p>
                 <ol class="tutorial-steps">
-                    <li><strong>Módulos (à esquerda).</strong> São 15 módulos, do básico ao avançado. Os quadradinhos ao lado de cada módulo mostram quais lições você já concluiu.</li>
+                    <li><strong>Módulos (à esquerda).</strong> São 15 módulos, do básico ao avançado. O anel em volta do número de cada módulo enche conforme você conclui as lições.</li>
                     <li><strong>Lição (ao centro).</strong> Leia a explicação, o desafio e consulte as tabelas disponíveis no pesquisador de objetos.</li>
                     <li><strong>Editor (à direita).</strong> Escreva o SQL e clique em <b>Executar código</b> (ou <kbd>Ctrl</kbd> + <kbd>Enter</kbd>). O resultado aparece logo abaixo.</li>
                     <li><strong>Travou?</strong> Abra <b>Solução</b>, copie para o editor e execute. Se os dados ficarem bagunçados, use <b>Restaurar banco</b>.</li>
                 </ol>
-                <p class="tutorial-tip">Ao concluir todas as lições de um cenário, o botão <b>Certificado</b> no topo é liberado.</p>
+                <p class="tutorial-tip">O botão <b>Certificado</b>, no topo, gera o certificado a qualquer momento. Antes de concluir o curso, ele registra as horas parciais que você já cumpriu.</p>
             </div>
             <div class="tutorial-actions">
                 <button class="btn-run" style="width: 100%;" onclick="document.getElementById('tutorial-modal').classList.remove('active')">Começar</button>
@@ -120,7 +122,7 @@
                 </button>
             </div>
             <div class="header-actions">
-                <button id="btn-certificate" class="btn-certificate locked" title="Conclua o curso para liberar o certificado">
+                <button id="btn-certificate" class="btn-certificate" title="Gerar certificado (completo ou com horas parciais)">
                     <i class="ph-fill ph-certificate"></i> <span>Certificado</span>
                 </button>
                 <button id="audio-toggle" class="btn-icon" title="Ligar/desligar som" aria-label="Ligar ou desligar som">
@@ -137,10 +139,11 @@
             <div class="theme-modal-content certificate-modal-content">
                 <button id="btn-close-cert" class="theme-modal-close"><i class="ph-bold ph-x"></i></button>
                 <div class="cert-input-step" id="cert-step-1">
-                    <h2 class="theme-modal-title">Parabéns, Especialista!</h2>
-                    <p class="theme-modal-subtitle">Você concluiu todos os módulos do treinamento. Como devemos escrever seu nome no certificado?</p>
-                    <input type="text" id="student-name-input" placeholder="Seu Nome Completo" class="cert-input">
-                    <button id="btn-generate-final" class="btn-run" style="width: 100%; margin-top: 20px;">Gerar Certificado PDF</button>
+                    <h2 class="theme-modal-title" id="cert-step-title">Gerar certificado</h2>
+                    <p class="theme-modal-subtitle" id="cert-step-subtitle"></p>
+                    <label for="student-name-input" class="cert-label">Nome completo, como deve aparecer no certificado</label>
+                    <input type="text" id="student-name-input" placeholder="Seu nome completo" class="cert-input">
+                    <button id="btn-generate-final" class="btn-run" style="width: 100%; margin-top: 20px;">Gerar certificado</button>
                 </div>
 
                 <div class="cert-viewer hidden" id="cert-step-2">
@@ -164,11 +167,12 @@
                                 <div class="cert-body-modern">
                                     <p class="cert-intro">CERTIFICAMOS QUE</p>
                                     <h2 id="display-student-name" class="cert-name-display">NOME DO ALUNO</h2>
-                                    <p class="cert-summary-text">
+                                    <p class="cert-summary-text" id="cert-summary-text">
                                         concluiu com êxito o treinamento de <strong>SQL na Prática: Treinamento Interativo Online</strong>, com 15 módulos que cobrem SELECT, filtros, agregações com GROUP BY e HAVING, JOINs (inclusive LEFT JOIN), subqueries, CTEs, window functions, CASE WHEN, tratamento de nulos, UNION, criação de tabelas e views, índices e desafios de negócio, através de prática intensiva em cenários reais.
                                     </p>
                                     <div class="cert-meta-info">
-                                        <span>Data de Emissão: <span id="cert-date-display">02/05/2026</span></span>
+                                        <span>Carga horária: <span id="cert-hours-display">20 horas</span></span>
+                                        <span>Data de emissão: <span id="cert-date-display">02/05/2026</span></span>
                                     </div>
                                 </div>
 
@@ -220,7 +224,7 @@
                     <div class="progress-track">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
-                    <p class="cert-info-note"><i class="ph-fill ph-certificate"></i> Certificado liberado em 100%</p>
+                    <p class="cert-info-note"><i class="ph-fill ph-certificate"></i> <span id="cert-hours-note">0 h de 20 h de curso</span></p>
                 </div>
 
                 <div id="lesson-list" class="lesson-list">
